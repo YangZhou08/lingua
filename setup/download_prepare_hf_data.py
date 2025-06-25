@@ -83,7 +83,13 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "fineweb_edu_10bt": "HuggingFaceFW/fineweb-edu",
         "dclm_baseline_1.0": "mlfoundations/dclm-baseline-1.0",
         "dclm_baseline_1.0_10prct": "mlfoundations/dclm-baseline-1.0",
-    }[dataset]
+        "megamath_pro_web": "semran1/megamath-web-pro", 
+        "openr1_220k": "open-r1/OpenR1-Math-220k", 
+        "a-m_team": "a-m-team/AM-DeepSeek-Distilled-40M", 
+        "tulu_if": "allenai/tulu-3-sft-personas-instruction-following", 
+        "wildchat_if": "allenai/WildChat-1M", 
+        "chat_if": "HuggingFaceH4/ultrachat_200k", 
+    }[dataset] 
     src_dir = f"{data_dir}/{dataset}"
     out_dir = f"{src_dir}_shuffled"
     os.makedirs(out_dir, exist_ok=True)
@@ -94,18 +100,21 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "fineweb_edu_10bt": ".jsonl",
         "dclm_baseline_1.0": ".jsonl.zst",
         "dclm_baseline_1.0_10prct": ".jsonl.zst",
+        "megamath_pro_web": ".jsonl", 
     }[dataset]
     cat_command = {
         "fineweb_edu": "cat {}",
         "fineweb_edu_10bt": "cat {}",
         "dclm_baseline_1.0": "zstdcat {} && echo",
-        "dclm_baseline_1.0_10prct": "zstdcat {} && echo",
+        "dclm_baseline_1.0_10prct": "zstdcat {} && echo", 
+        "megamath_pro_web": "cat {}", 
     }[dataset]
     allow_patterns = {
         "fineweb_edu": None,
         "fineweb_edu_10bt": "sample/10BT/*",
         "dclm_baseline_1.0": "*.jsonl.zst",
-        "dclm_baseline_1.0_10prct": "global-shard_01_of_10/*.jsonl.zst",
+        "dclm_baseline_1.0_10prct": "global-shard_01_of_10/*.jsonl.zst", 
+        "megamath_pro_web": None, 
     }[dataset]
     suffix = ".jsonl"
     k_validation = 10000  # Number of lines to take from each chunk for validation
@@ -116,8 +125,8 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     # Download dataset
     download_dataset(repo_id, src_dir, allow_patterns)
 
-    if "fineweb" in dataset:
-        parquet_to_jsonl(dataset, work_dir, src_dir, src_dir)
+    if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
+        parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"
