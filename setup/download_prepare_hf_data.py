@@ -122,11 +122,13 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     # Setup terashuf
     terashuf_dir = setup_terashuf(work_dir)
 
+    '''
     # Download dataset
-    download_dataset(repo_id, src_dir, allow_patterns)
+    download_dataset(repo_id, src_dir, allow_patterns) 
 
     if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
+    ''' 
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"
@@ -148,7 +150,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         run_command(f"head -n {k_validation} {chunk_file} >> {validation_file}")
         run_command(f"sed -i '1,{k_validation}d' {chunk_file}")
 
-    print("All tasks completed successfully!")
+    print("All tasks completed successfully!") 
 
 
 if __name__ == "__main__":
