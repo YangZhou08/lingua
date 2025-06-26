@@ -38,6 +38,7 @@ data:
     load_async: true
     tokenizer:
         name: bytes 
+        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama 
 
 profiling:
     run: true

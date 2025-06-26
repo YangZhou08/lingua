@@ -37,7 +37,9 @@ import xformers.ops
 
 from lingua.float8 import convert_linears_to_fp8
 
-logger = logging.getLogger()
+logger = logging.getLogger() 
+
+from termcolor import colored 
 
 # for selective AC
 default_no_recompute_ops = {
@@ -277,7 +279,8 @@ def setup_torch_distributed(dist_args):
     if torch.cuda.device_count() > 1:
         torch.cuda.set_device(local_rank)
     torch.distributed.init_process_group(init_method="env://", backend="nccl")
-    torch.autograd.set_detect_anomaly(dist_args.detect_anomaly)
+    torch.autograd.set_detect_anomaly(dist_args.detect_anomaly) 
+    print(colored("Distributed setup complete", "green")) 
 
 
 def get_module(module, access_string):
