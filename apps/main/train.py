@@ -334,7 +334,13 @@ def train(args: TrainArgs):
         gc.disable()
 
         # train loop
-        model.train()
+        model.train() 
+        
+        grad_norm = torch.nn.utils.clip_grad_norm_(
+            model.parameters(), max_norm=args.optim.clip, foreach=True
+        ) 
+        print(colored("finish the first clip grad norm", "cyan")) 
+        
         metric_logger = context_stack.enter_context(
             MetricLogger(Path(args.dump_dir) / "metrics.jsonl", args)
         )
