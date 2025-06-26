@@ -285,11 +285,6 @@ def train(args: TrainArgs):
                 torch.manual_seed(args.model.seed)
                 model.init_weights()
         check_model_value_range(model, range=10.0, std=1.0) 
-        
-        grad_norm = torch.nn.utils.clip_grad_norm_(
-            model.parameters(), max_norm=args.optim.clip, foreach=True
-        ) 
-        print(colored("finish the first clip grad norm", "cyan")) 
 
         # log model size
 
@@ -336,11 +331,6 @@ def train(args: TrainArgs):
         # train loop
         model.train() 
         
-        grad_norm = torch.nn.utils.clip_grad_norm_(
-            model.parameters(), max_norm=args.optim.clip, foreach=True
-        ) 
-        print(colored("finish the second clip grad norm", "cyan")) 
-        
         metric_logger = context_stack.enter_context(
             MetricLogger(Path(args.dump_dir) / "metrics.jsonl", args)
         )
@@ -358,7 +348,6 @@ def train(args: TrainArgs):
         time_last_log = timer()
         gc.collect() 
         while train_state.step < args.steps: 
-            print(colored("step {}".format(train_state.step), "red")) 
             # We constrain train_state.acc_step to be in range 0 to args.grad_acc_steps - 1
             train_state.acc_step += 1
             train_state.acc_step = train_state.acc_step % args.grad_acc_steps
@@ -425,11 +414,6 @@ def train(args: TrainArgs):
                 assert (
                     next(model.parameters()).grad is None
                 ), "Probe model shouldn't have grads at this point" 
-            
-            grad_norm = torch.nn.utils.clip_grad_norm_(
-                model.parameters(), max_norm=args.optim.clip, foreach=True 
-            ) 
-            print(colored("finish the third clip grad norm", "cyan")) 
 
             loss = model(input_ids, labels) 
 
@@ -448,8 +432,6 @@ def train(args: TrainArgs):
             grad_norm = -1.0
             if train_state.acc_step == 0: 
                 # print(colored("get_rank {}".format(torch.distributed.get_rank()), "red")) 
-                for param in model.parameters(): 
-                    print(colored("counting tensor {}".format(param.shape), "red")) 
                 grad_norm = torch.nn.utils.clip_grad_norm_(
                     model.parameters(), max_norm=args.optim.clip, foreach=True
                 )
