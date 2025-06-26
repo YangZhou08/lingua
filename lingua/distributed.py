@@ -28,7 +28,7 @@ from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
 )
 from torch.utils.checkpoint import (
     # create_selective_checkpoint_contexts, 
-    CheckpointPolicy,
+    # CheckpointPolicy, 
 )
 from torch.distributed.device_mesh import DeviceMesh, init_device_mesh
 
@@ -467,6 +467,7 @@ def parallelize_model(
     else:
         raise ValueError(f"Invalid fsdp_type: {distributed_args.fsdp_type}")
 
+    '''
     if distributed_args.selective_activation_checkpointing:
         model = checkpoint_wrapper(
             model,
@@ -474,7 +475,8 @@ def parallelize_model(
                 create_selective_checkpoint_contexts,
                 get_default_policy(no_recompute_ops),
             ),
-        )
+        ) 
+    ''' 
 
     if distributed_args.compile:
         torch._dynamo.config.cache_size_limit = (
