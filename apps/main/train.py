@@ -20,7 +20,9 @@ import torch.distributed
 import torch.nn.functional as F
 import xformers.profiler
 from torch.optim import lr_scheduler
-from torch.distributed.checkpoint.stateful import Stateful
+from torch.distributed.checkpoint.stateful import Stateful 
+from torch.distributed.checkpoint.state_dict import get_model_state_dict, set_model_state_dict 
+import torch.distributed.checkpoint as dcp 
 from torch.distributed._tensor import DTensor
 
 from lingua.args import dataclass_from_dict, dump_config, flatten_dict
@@ -262,13 +264,20 @@ def train(args: TrainArgs):
                 args.model = json.loads(f.read()) 
                 args.model = LMTransformerArgshfllama(**args.model["model"]) 
             print(colored("args.model {}".format(args.model), "green")) 
-            sys.stdout.flush() 
         with torch.device("meta"):
             model = LMTransformer(args.model)
         logger.info("Model is built !") 
-        exit(0) 
-
-        model_param_count = get_num_params(model)
+        
+        '''
+        # loading from the model weights from the initalckpt 
+        if args.checkpoint.init_ckpt_path: 
+            st_dict = get_model_state_dict(args.checkpoint.init_ckpt_path) 
+            dcp.load(st_dict, checkpoint_id = args.checkpoint.init_ckpt_path) 
+            set_model_state_dict(model, st_dict) 
+            model.rope_embeddings.reset_parameters() 
+        ''' 
+        model_param_count = get_num_params(model) 
+        print(colored("model_param_count {}".format(model_param_count), "green")) 
 
         model = parallelize_model(
             model,
@@ -283,14 +292,14 @@ def train(args: TrainArgs):
 
         # Once we shard the model on different gpus we can actually initialize the model
         # First we create empty tensors of the correct shapes
-        model = model.to_empty(device="cuda")
+        model = model.to_empty(device="cuda") 
         # Then we init the model. Please make sure this function initializes *ALL* parameters
         # and buffers, otherwise you will have random values in the unitialized tensors
         # which will silently fail (give nan gradients for example)
 
         if args.checkpoint.init_ckpt_path:
             logger.info(f"Loading initial model from {args.checkpoint.init_ckpt_path}")
-            load_from_checkpoint(args.checkpoint.init_ckpt_path, model, model_key="model") # Put model_key="" if its directly the model checkpoint 
+            load_from_checkpoint(args.checkpoint.init_ckpt_path, model, model_key="model", optim_key = "") # Put model_key="" if its directly the model checkpoint 
             model.rope_embeddings.reset_parameters() # For RoPe initialization since it's a buffer it might not be loaded
         else:
             with torch.random.fork_rng(devices=[torch.cuda.current_device()]):
@@ -300,7 +309,8 @@ def train(args: TrainArgs):
 
         # log model size
 
-        logger.info(f"Model size: {model_param_count:,} total parameters")
+        logger.info(f"Model size: {model_param_count:,} total parameters") 
+        exit(0) 
 
         gpu_memory_monitor = GPUMemoryMonitor("cuda")
         logger.info(
