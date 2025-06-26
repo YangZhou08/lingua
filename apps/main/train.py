@@ -615,7 +615,7 @@ def train(args: TrainArgs):
             args,
             device_mesh=world_mesh,
         )
-    gc.collect()
+    # gc.collect() 
 
 
 def main():
