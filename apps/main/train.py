@@ -376,7 +376,7 @@ def train(args: TrainArgs):
                 logger.info("garbage collection")
                 # we do garbage collection manually otherwise different processes
                 # run the GC at different times so they slow down the whole pipeline
-                gc.collect()
+                # gc.collect() 
 
             input_ids = batch[:, :, 0].cuda()
             labels = batch[:, :, 1].cuda()
