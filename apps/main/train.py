@@ -45,7 +45,8 @@ from lingua.distributed import (
     clean_env,
     requeue_slurm_job,
     check_model_value_range,
-)
+) 
+from termcolor import colored 
 from lingua.logger import init_logger
 from lingua.metrics import (
     GPUMemoryMonitor,
@@ -427,7 +428,8 @@ def train(args: TrainArgs):
 
             # optimizer step
             grad_norm = -1.0
-            if train_state.acc_step == 0:
+            if train_state.acc_step == 0: 
+                print(colored("get_rank {}".format(dist.get_rank()), "red")) 
                 grad_norm = torch.nn.utils.clip_grad_norm_(
                     model.parameters(), max_norm=args.optim.clip, foreach=True
                 )
