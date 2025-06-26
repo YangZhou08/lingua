@@ -117,7 +117,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "megamath_pro_web": None, 
     }[dataset]
     suffix = ".jsonl"
-    k_validation = 10000  # Number of lines to take from each chunk for validation
+    k_validation = 0  # Number of lines to take from each chunk for validation
 
     # Setup terashuf
     terashuf_dir = setup_terashuf(work_dir)
