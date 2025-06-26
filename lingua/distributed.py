@@ -36,7 +36,7 @@ from torch.distributed.device_mesh import DeviceMesh, init_device_mesh
 # for no recompute ops
 import xformers.ops
 
-from lingua.float8 import convert_linears_to_fp8
+# from lingua.float8 import convert_linears_to_fp8 
 
 logger = logging.getLogger() 
 
@@ -404,10 +404,12 @@ def parallelize_model(
     tp_parallelize=None,
     no_recompute_ops=None,
 ):
-    if distributed_args.float8_recipe is not None:
+    if distributed_args.float8_recipe is not None: 
+        '''
         model = convert_linears_to_fp8(
             model, distributed_args.float8_recipe, distributed_args.float8_filter
-        )
+        ) 
+        ''' 
 
     if distributed_args.tp_size > 1:
         assert (
