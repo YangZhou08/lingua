@@ -70,7 +70,9 @@ from lingua.stool import StoolArgs, launch_job
 
 import wandb
 
-logger = logging.getLogger()
+logger = logging.getLogger() 
+
+import json 
 
 
 @dataclass
@@ -253,7 +255,11 @@ def train(args: TrainArgs):
 
         # Initializing Model in meta device allows us to initialize models much bigger than 1 gpu's memory 
         print(colored("args.model {}".format(args.model), "green")) 
-        exit(0) 
+        if args.checkpoint.init_ckpt_path: 
+            print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
+            args.model = json.loads(os.path.join(args.checkpoint.init_ckpt_path, "params.json")) 
+            print(colored("args.model {}".format(args.model), "green")) 
+            exit(0) 
         with torch.device("meta"):
             model = LMTransformer(args.model)
         logger.info("Model is built !")
