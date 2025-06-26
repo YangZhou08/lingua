@@ -70,6 +70,23 @@ class LMTransformerArgs(BaseTransformerArgs):
 
     sliding_window: Optional[int] = None
 
+@dataclass
+class LMTransformerArgshfllama(BaseTransformerArgs):
+
+    seed: int = 42
+
+    dim: int = 4096 
+    ffn_dim_multiplier: int = None 
+    multiple_of: int = None 
+    n_heads: int = None 
+    n_kv_heads: int = None 
+    n_layers: int = None 
+    norm_eps: float = None 
+    rope_theta: float = None 
+    use_scaled_rope: bool = None 
+    vocab_size: int = None 
+    sliding_window = False # don't worry about 
+    weight_tying = False 
 
 class LMTransformer(BaseTransformer):
     def __init__(self, args: LMTransformerArgs):

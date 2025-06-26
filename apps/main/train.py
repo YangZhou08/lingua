@@ -64,7 +64,8 @@ from apps.main.transformer import (
     build_fsdp_grouping_plan,
     tp_parallelize,
     get_no_recompute_ops,
-)
+) 
+from apps.main.transformer import LMTransformerArgshfllama 
 from lingua.probe import AutoProbeD
 from lingua.stool import StoolArgs, launch_job
 
@@ -259,8 +260,7 @@ def train(args: TrainArgs):
             print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
             with open(os.path.join(args.checkpoint.init_ckpt_path, "params.json"), "r") as f: 
                 args.model = json.loads(f.read()) 
-                args.model = args.model["model"] 
-                # args.model = LMTransformerArgs(**args.model["model"]) 
+                args.model = LMTransformerArgshfllama(**args.model["model"]) 
             print(colored("args.model {}".format(args.model), "green")) 
             sys.stdout.flush() 
         with torch.device("meta"):
