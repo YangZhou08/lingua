@@ -266,7 +266,8 @@ def train(args: TrainArgs):
             fsdp_grouping_plan=build_fsdp_grouping_plan(args.model),
             tp_parallelize=tp_parallelize,
             no_recompute_ops=get_no_recompute_ops(),
-        )
+        ) 
+        
 
         # Once we shard the model on different gpus we can actually initialize the model
         # First we create empty tensors of the correct shapes
@@ -283,7 +284,11 @@ def train(args: TrainArgs):
             with torch.random.fork_rng(devices=[torch.cuda.current_device()]):
                 torch.manual_seed(args.model.seed)
                 model.init_weights()
-        check_model_value_range(model, range=10.0, std=1.0)
+        check_model_value_range(model, range=10.0, std=1.0) 
+        
+        grad_norm = torch.nn.utils.clip_grad_norm_(
+            model.parameters(), max_norm=args.optim.clip, foreach=True
+        ) 
 
         # log model size
 
