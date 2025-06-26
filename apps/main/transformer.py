@@ -5,7 +5,7 @@ from typing import Optional, Tuple, Union
 
 import torch
 from torch import nn
-from torch.nn.attention.flex_attention import create_block_mask, BlockMask
+# from torch.nn.attention.flex_attention import create_block_mask, BlockMask 
 
 from torch.distributed._tensor import Replicate, Shard
 from torch.distributed.tensor.parallel import (
@@ -35,8 +35,8 @@ def create_causal_mask(seqlen, attn_impl, sliding_window):
         return fmha.attn_bias.LowerTriangularMask()
     elif attn_impl == "sdpa":
         return "causal"
-    elif attn_impl == "flex_attention":
-        return create_block_mask(causal_mask, None, None, seqlen, seqlen)
+    # elif attn_impl == "flex_attention": 
+        # return create_block_mask(causal_mask, None, None, seqlen, seqlen) 
     else:
         raise NotImplementedError(
             f"Attention {attn_impl} with {sliding_window} sliding window not implemented"
@@ -97,7 +97,7 @@ class LMTransformer(BaseTransformer):
         token_values: torch.Tensor,
         target: Optional[torch.Tensor] = None,
         tok_idx: Optional[torch.Tensor] = None,
-        mask: Optional[Union[BlockMask, AttentionBias, torch.Tensor, str]] = None,
+        mask: Optional[Union[AttentionBias, torch.Tensor, str]] = None,
         attn_impl: str = "sdpa",
     ):
         bsz, seqlen = token_values.shape
