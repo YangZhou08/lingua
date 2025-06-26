@@ -257,7 +257,8 @@ def train(args: TrainArgs):
         print(colored("args.model {}".format(args.model), "green")) 
         if args.checkpoint.init_ckpt_path: 
             print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
-            args.model = json.loads(os.path.join(args.checkpoint.init_ckpt_path, "params.json")) 
+            with open(os.path.join(args.checkpoint.init_ckpt_path, "params.json"), "r") as f: 
+                args.model = json.loads(f.read()) 
             print(colored("args.model {}".format(args.model), "green")) 
             sys.stdout.flush() 
             exit(0) 
