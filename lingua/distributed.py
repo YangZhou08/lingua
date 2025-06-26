@@ -26,10 +26,11 @@ from torch.distributed._composable.fsdp import MixedPrecisionPolicy, fully_shard
 from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
     checkpoint_wrapper,
 )
-from torch.utils.checkpoint import (
+# from torch.utils.checkpoint import ( 
     # create_selective_checkpoint_contexts, 
     # CheckpointPolicy, 
-)
+# ) 
+
 from torch.distributed.device_mesh import DeviceMesh, init_device_mesh
 
 # for no recompute ops
