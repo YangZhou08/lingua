@@ -259,6 +259,7 @@ def train(args: TrainArgs):
             print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
             args.model = json.loads(os.path.join(args.checkpoint.init_ckpt_path, "params.json")) 
             print(colored("args.model {}".format(args.model), "green")) 
+            sys.stdout.flush() 
             exit(0) 
         with torch.device("meta"):
             model = LMTransformer(args.model)
