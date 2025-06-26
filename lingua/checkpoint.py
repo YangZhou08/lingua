@@ -100,6 +100,7 @@ def load_from_checkpoint(ckpt_dir: str, model: nn.Module, optimizer: Optional[to
             state_dict = state_dict.pop(model_key)
     
     dcp.load(state_dict, checkpoint_id=ckpt_dir) 
+    set_model_state_dict(model, state_dict[model_key]) # calling the setter 
 
 class CheckpointManager:
     def __init__(self, args: CheckpointArgs):

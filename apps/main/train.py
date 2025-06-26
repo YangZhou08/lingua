@@ -310,7 +310,6 @@ def train(args: TrainArgs):
         # log model size
 
         logger.info(f"Model size: {model_param_count:,} total parameters") 
-        exit(0) 
 
         gpu_memory_monitor = GPUMemoryMonitor("cuda")
         logger.info(
