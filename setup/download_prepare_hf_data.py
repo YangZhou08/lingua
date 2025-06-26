@@ -136,19 +136,27 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
 
     # Run the original shuffling and splitting command
     terashuf_executable = os.path.join(terashuf_dir, "terashuf")
+    # run_command(
+    #     f"ulimit -n 100000 && "
+    #     f"find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | "
+    #     f"split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}"
+    #     "; trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE;"
+    # ) 
     run_command(
+        f"trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE; "
         f"ulimit -n 100000 && "
         f"find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | "
         f"split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}"
-        "; trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE;"
-    )
+    ) 
 
+    '''
     # Create validation set and remove lines from chunks
     validation_file = f"{out_dir}/{dataset}.val{suffix}"
     for i in range(nchunks):
         chunk_file = f"{out_dir}/{prefix}{i:02d}{suffix}"
         run_command(f"head -n {k_validation} {chunk_file} >> {validation_file}")
-        run_command(f"sed -i '1,{k_validation}d' {chunk_file}")
+        run_command(f"sed -i '1,{k_validation}d' {chunk_file}") 
+    ''' 
 
     print("All tasks completed successfully!") 
 
