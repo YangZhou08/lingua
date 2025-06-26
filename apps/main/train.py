@@ -339,7 +339,7 @@ def train(args: TrainArgs):
         grad_norm = torch.nn.utils.clip_grad_norm_(
             model.parameters(), max_norm=args.optim.clip, foreach=True
         ) 
-        print(colored("finish the first clip grad norm", "cyan")) 
+        print(colored("finish the second clip grad norm", "cyan")) 
         
         metric_logger = context_stack.enter_context(
             MetricLogger(Path(args.dump_dir) / "metrics.jsonl", args)
@@ -356,7 +356,7 @@ def train(args: TrainArgs):
 
         nwords_since_last_log = 0
         time_last_log = timer()
-        gc.collect()
+        gc.collect() 
         while train_state.step < args.steps:
             # We constrain train_state.acc_step to be in range 0 to args.grad_acc_steps - 1
             train_state.acc_step += 1
