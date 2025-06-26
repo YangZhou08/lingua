@@ -8,15 +8,15 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from xformers.ops import fmha, AttentionBias
-from torch.nn.attention.flex_attention import (
-    BlockMask,
-    flex_attention,
-    _mask_mod_signature,
-)
+# from torch.nn.attention.flex_attention import (
+#     BlockMask,
+#     flex_attention,
+#     _mask_mod_signature,
+# ) 
 
 from lingua import probe
 
-flex_attention_comp = torch.compile(flex_attention)
+# flex_attention_comp = torch.compile(flex_attention) 
 
 
 class InitStdFactor(Enum):
@@ -167,10 +167,10 @@ def lengths_to_local_ids(lengths):
 
 
 def generate_doc_mask_mod(
-    mask_mod: _mask_mod_signature,
+    mask_mod,
     lengths: torch.Tensor,
     kv_lengths: Optional[torch.Tensor] = None,
-) -> _mask_mod_signature:
+): 
     """Generates mask mods that apply to inputs to flex attention in the sequence stacked
     format.
 
@@ -349,7 +349,7 @@ class Attention(nn.Module):
         x: torch.Tensor,
         freq_cis: torch.Tensor,
         tok_idx: Optional[torch.Tensor] = None,
-        mask: Optional[Union[BlockMask, AttentionBias, str]] = None,
+        mask: Optional[Union[AttentionBias, str]] = None,
         attn_impl: str = "sdpa",
     ) -> torch.Tensor:
         # B S D
@@ -374,11 +374,11 @@ class Attention(nn.Module):
         xk = repeat_kv(xk, self.heads_per_group, dim=2)
         xv = repeat_kv(xv, self.heads_per_group, dim=2)
 
-        if attn_impl == "flex_attention":
-            assert mask is None or isinstance(mask, BlockMask)
-            xq, xk, xv = map(lambda e: e.transpose(1, 2), (xq, xk, xv))
-            output = flex_attention_comp(xq, xk, xv, block_mask=mask)
-            output = output.transpose(1, 2).contiguous()  # B H S D -> B S H D
+        # if attn_impl == "flex_attention":
+        #     assert mask is None or isinstance(mask)
+        #     xq, xk, xv = map(lambda e: e.transpose(1, 2), (xq, xk, xv))
+        #     output = flex_attention_comp(xq, xk, xv, block_mask=mask)
+        #     output = output.transpose(1, 2).contiguous()  # B H S D -> B S H D 
 
         elif attn_impl == "fmha":
             assert mask is None or isinstance(mask, AttentionBias)
@@ -528,7 +528,7 @@ class TransformerBlock(nn.Module):
         x: torch.Tensor,
         freq_cis: torch.Tensor,
         tok_idx: Optional[torch.Tensor] = None,
-        mask: Optional[Union[BlockMask, AttentionBias, str]] = None,
+        mask: Optional[Union[AttentionBias, str]] = None,
         attn_impl: str = "sdpa",
     ) -> torch.Tensor:
 
@@ -571,7 +571,7 @@ class BaseTransformer(nn.Module):
         self,
         h,
         tok_idx: Optional[torch.Tensor] = None,
-        mask: Optional[Union[BlockMask, AttentionBias, str]] = None,
+        mask: Optional[Union[AttentionBias, str]] = None,
         attn_impl: str = "sdpa",
     ):
 
