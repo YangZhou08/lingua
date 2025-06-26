@@ -376,7 +376,7 @@ def train(args: TrainArgs):
                 logger.info("garbage collection")
                 # we do garbage collection manually otherwise different processes
                 # run the GC at different times so they slow down the whole pipeline
-                # gc.collect() 
+                gc.collect() 
 
             input_ids = batch[:, :, 0].cuda()
             labels = batch[:, :, 1].cuda()
@@ -424,9 +424,14 @@ def train(args: TrainArgs):
 
                 assert (
                     next(model.parameters()).grad is None
-                ), "Probe model shouldn't have grads at this point"
+                ), "Probe model shouldn't have grads at this point" 
+            
+            grad_norm = torch.nn.utils.clip_grad_norm_(
+                model.parameters(), max_norm=args.optim.clip, foreach=True 
+            ) 
+            print(colored("finish the third clip grad norm", "cyan")) 
 
-            loss = model(input_ids, labels)
+            loss = model(input_ids, labels) 
 
             if args.grad_acc_steps > 1:
                 model.set_requires_gradient_sync(train_state.acc_step == 0)
