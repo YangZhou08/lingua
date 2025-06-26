@@ -259,7 +259,8 @@ def train(args: TrainArgs):
             print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
             with open(os.path.join(args.checkpoint.init_ckpt_path, "params.json"), "r") as f: 
                 args.model = json.loads(f.read()) 
-                args.model = LMTransformerArgs(**args.model["model"]) 
+                args.model = args.model["model"] 
+                # args.model = LMTransformerArgs(**args.model["model"]) 
             print(colored("args.model {}".format(args.model), "green")) 
             sys.stdout.flush() 
             exit(0) 
