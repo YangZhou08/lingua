@@ -289,6 +289,7 @@ def train(args: TrainArgs):
         grad_norm = torch.nn.utils.clip_grad_norm_(
             model.parameters(), max_norm=args.optim.clip, foreach=True
         ) 
+        print(colored("finish the first clip grad norm", "cyan")) 
 
         # log model size
 
