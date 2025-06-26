@@ -263,10 +263,10 @@ def train(args: TrainArgs):
                 # args.model = LMTransformerArgs(**args.model["model"]) 
             print(colored("args.model {}".format(args.model), "green")) 
             sys.stdout.flush() 
-            exit(0) 
         with torch.device("meta"):
             model = LMTransformer(args.model)
-        logger.info("Model is built !")
+        logger.info("Model is built !") 
+        exit(0) 
 
         model_param_count = get_num_params(model)
 
