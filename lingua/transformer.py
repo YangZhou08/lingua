@@ -375,7 +375,7 @@ class Attention(nn.Module):
         xv = repeat_kv(xv, self.heads_per_group, dim=2)
 
         if attn_impl == "flex_attention":
-            assert mask is None or isinstance(mask)
+            assert mask is None or isinstance(mask, BlockMask) 
             xq, xk, xv = map(lambda e: e.transpose(1, 2), (xq, xk, xv))
             output = flex_attention_comp(xq, xk, xv, block_mask=mask)
             output = output.transpose(1, 2).contiguous()  # B H S D -> B S H D 
