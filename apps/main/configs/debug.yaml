@@ -37,7 +37,7 @@ data:
     n_views: 2
     load_async: true
     tokenizer:
-        name: llama3 
+        name: bytes 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama 
 
 profiling:
