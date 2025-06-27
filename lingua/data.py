@@ -16,7 +16,8 @@ from lingua.tokenizer import build_tokenizer, TokenizerArgs
 import numpy as np
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger() 
+from termcolor import colored 
 
 """
 This file contains all code necessary for text data loading from preshuffled jsonl chunks.
@@ -468,7 +469,9 @@ def batch_and_shuffle_prefetched_sequences(
 
 def find_and_sanitize_chunks(dataset_path: str, world_size: int, file_pattern: str = TRAIN_DATA_FILE_PATTERN):
     dataset_chunks = [str(p) for p in Path(dataset_path).glob(file_pattern)]
-    n_chunks = len(dataset_chunks)
+    n_chunks = len(dataset_chunks) 
+    print(colored("dataset_path {}".format(dataset_path), "green")) 
+    print(colored("n_chunks {}".format(n_chunks), "green")) 
     
     assert n_chunks > 0, f"No valid chunks in {dataset_path}" 
 
