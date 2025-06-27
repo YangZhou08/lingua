@@ -380,7 +380,7 @@ class Attention(nn.Module):
             output = flex_attention_comp(xq, xk, xv, block_mask=mask)
             output = output.transpose(1, 2).contiguous()  # B H S D -> B S H D 
 
-        if attn_impl == "fmha": 
+        elif attn_impl == "fmha": 
             assert mask is None or isinstance(mask, AttentionBias)
             output = fmha.memory_efficient_attention(xq, xk, xv, attn_bias=mask) 
             # This uses B S H D instead of B H S D of pytorch
