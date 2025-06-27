@@ -248,7 +248,8 @@ def launch_eval(cfg: EvalArgs):
     wrap = EvalHarnessLM(generator)
     results = simple_evaluate(wrap, **asdict(cfg.harness))
     print(results) 
-    val_results =  None
+    val_results =  None 
+    print(colored("cfg.validation {}".format(cfg.validation), "green")) 
     if cfg.validation:
         val_results = eval_on_val(generator, cfg.validation, train_cfg)
     if get_global_rank() == 0:
