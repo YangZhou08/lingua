@@ -11,7 +11,7 @@ seed: 777
 optim:
     lr: 3.0e-5 
     warmup: 2000 
-    lr_min_ratio: 0.000001
+    lr_min_ratio: 0.000003 
     clip: 10.0
 
 distributed:
