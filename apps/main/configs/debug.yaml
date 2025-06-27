@@ -31,7 +31,7 @@ data:
     root_dir: data/shuffled
     sources:
         megamath_pro_web: 1.0 
-    batch_size: 1 
+    batch_size: 2 
     prefetch_size: 64
     seq_len: 8192 
     n_views: 2
