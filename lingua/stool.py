@@ -42,13 +42,15 @@ SBATCH_COMMAND = """#!/bin/bash
 {qos}
 {account}
 {constraint}
-#SBATCH --job-name={name}
-#SBATCH --nodes={nodes}
-#SBATCH --gres=gpu:{ngpus}
-#SBATCH --cpus-per-gpu={ncpu}
-#SBATCH --time={time}
-#SBATCH --partition={partition}
-#SBATCH --mem={mem}
+#SBATCH --job-name=my_job          # Name of the job 
+#SBATCH --nodes=4 
+#SBATCH --gres=gpu:8              # Request 8 GPUs
+#SBATCH --cpus-per-task=12        # Request 12 CPUs per task
+#SBATCH --partition=learn  # Specify the storygen_high queue/partition
+#SBATCH -q storygen_high
+#SBATCH --time=120:00:00           # Set time limit to 24 hours 
+#SBATCH --output=job_%j.out       # Output file (%j is the job ID) 
+#SBATCH --mem=512G 
 
 #SBATCH --output={dump_dir}/logs/%j/%j.stdout
 #SBATCH --error={dump_dir}/logs/%j/%j.stderr
@@ -59,7 +61,14 @@ SBATCH_COMMAND = """#!/bin/bash
 
 # Mimic the effect of "conda init", which doesn't work for scripts
 eval "$({conda_exe} shell.bash hook)"
-source activate {conda_env_path}
+
+set -x
+
+source /home/yangzho6/miniconda3/etc/profile.d/conda.sh
+conda activate nanotronn 
+
+gpustat 
+pwd 
 
 {go_to_code_dir}
 
