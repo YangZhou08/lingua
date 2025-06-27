@@ -59,6 +59,6 @@ eval:
     harness:
         tasks:
             - hellaswag
-            - piqa
+            - arc_challenge
     validation:
         max_steps: 100 

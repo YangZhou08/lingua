@@ -469,6 +469,8 @@ def batch_and_shuffle_prefetched_sequences(
 def find_and_sanitize_chunks(dataset_path: str, world_size: int, file_pattern: str = TRAIN_DATA_FILE_PATTERN):
     dataset_chunks = [str(p) for p in Path(dataset_path).glob(file_pattern)]
     n_chunks = len(dataset_chunks)
+    
+    assert n_chunks > 0, f"No valid chunks in {dataset_path}" 
 
     if n_chunks > world_size:
         n_discard = n_chunks - world_size
@@ -477,8 +479,6 @@ def find_and_sanitize_chunks(dataset_path: str, world_size: int, file_pattern: s
         assert (
             world_size % n_chunks == 0
         ), "World size should be a multiple of number of chunks"
-
-    assert n_chunks > 0, f"No valid chunks in {dataset_path}"
 
     return dataset_chunks
 
