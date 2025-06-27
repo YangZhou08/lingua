@@ -71,7 +71,7 @@ class LMTransformerArgs(BaseTransformerArgs):
     sliding_window: Optional[int] = None
 
 @dataclass
-class LMTransformerArgshfllama(BaseTransformerArgs):
+class LMTransformerArgshfllama(LMTransformerArgs): 
 
     seed: int = 42
 
