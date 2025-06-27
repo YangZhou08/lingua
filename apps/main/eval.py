@@ -28,7 +28,8 @@ from lingua.distributed import (
     get_global_rank,
     get_world_size,
     setup_torch_distributed,
-)
+) 
+from termcolor import colored 
 
 EVAL_FOLDER_NAME = "{:010d}"
 
