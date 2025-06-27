@@ -247,6 +247,7 @@ def launch_eval(cfg: EvalArgs):
 
     wrap = EvalHarnessLM(generator)
     results = simple_evaluate(wrap, **asdict(cfg.harness))
+    print(results) 
     val_results =  None
     if cfg.validation:
         val_results = eval_on_val(generator, cfg.validation, train_cfg)

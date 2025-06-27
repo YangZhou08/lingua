@@ -60,5 +60,5 @@ eval:
         tasks:
             - hellaswag
             - arc_challenge
-    validation:
-        max_steps: 100 
+    # validation:
+    #     max_steps: 100 
