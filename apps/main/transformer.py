@@ -86,7 +86,7 @@ class LMTransformerArgshfllama(LMTransformerArgs):
     use_scaled_rope: bool = None 
     vocab_size: int = None 
     sliding_window: Optional[int] = None # don't worry about 
-    weight_tying: Optional[int] = None 
+    weight_tying: bool = False 
 
 class LMTransformer(BaseTransformer):
     def __init__(self, args: LMTransformerArgs):
