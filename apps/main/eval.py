@@ -224,9 +224,11 @@ def launch_eval(cfg: EvalArgs):
         Path(cfg.ckpt_dir).exists()
         and (Path(cfg.ckpt_dir) / "params.json").exists()
         and next(Path(cfg.ckpt_dir).glob("*.pth"), None) is not None
-    ):
+    ): 
+        print(colored("Get in the first one", "green")) 
         consolidate_path = Path(cfg.ckpt_dir)
-    else:
+    else: 
+        print(colored("Get in the second one", "green")) 
         consolidate_path = Path(cfg.ckpt_dir) / CONSOLIDATE_FOLDER
         if not consolidate_path.exists() and get_global_rank() == 0:
             consolidate_path = consolidate_checkpoints(cfg.ckpt_dir)
@@ -243,7 +245,7 @@ def launch_eval(cfg: EvalArgs):
         model_cls=LMTransformer,
         model_args_cls=LMTransformerArgs,
     )
-    logger.info("Model loaded")
+    logger.info("Model loaded") 
     model.eval() 
     print(colored("generator config {}".format(cfg.generator), "yellow")) 
     generator = PackedCausalTransformerGenerator(cfg.generator, model, tokenizer)
