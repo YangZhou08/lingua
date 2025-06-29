@@ -245,7 +245,7 @@ def launch_eval(cfg: EvalArgs):
     )
     logger.info("Model loaded")
     model.eval() 
-    print(colored("generator config {}".format(cfg.generator), "green")) 
+    print(colored("generator config {}".format(cfg.generator), "yellow")) 
     generator = PackedCausalTransformerGenerator(cfg.generator, model, tokenizer)
 
     wrap = EvalHarnessLM(generator) 
