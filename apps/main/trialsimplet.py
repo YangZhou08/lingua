@@ -1,15 +1,15 @@
 from lm_eval import simple_evaluate 
 from termcolor import colored 
 
-from generate import (
+from apps.main.generate import (
     PackedCausalTransformerGenerator,
     PackedCausalTransformerGeneratorArgs,
     load_consolidated_model_and_tokenizer, 
 ) 
 
-from transformer import LMTransformer, LMTransformerArgs 
+from apps.main.transformer import LMTransformer, LMTransformerArgs 
 from lingua.checkpoint import CONSOLIDATE_FOLDER, consolidate_checkpoints 
-from eval import EvalHarnessLM 
+from apps.main.eval import EvalHarnessLM 
 from dataclasses import asdict 
 import json 
 
