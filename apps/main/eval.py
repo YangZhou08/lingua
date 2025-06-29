@@ -237,7 +237,6 @@ def launch_eval(cfg: EvalArgs):
     consolidate_path = str(consolidate_path)
     torch.distributed.barrier()
     logger.info("Loading model") 
-    print("consolidate_path {}".format(consolidate_path)) 
     print(colored("consolidate_path {}".format(consolidate_path), "green")) 
     model, tokenizer, train_cfg = load_consolidated_model_and_tokenizer(
         consolidate_path,
