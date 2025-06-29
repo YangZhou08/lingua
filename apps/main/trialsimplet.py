@@ -13,7 +13,11 @@ from eval import EvalHarnessLM
 from dataclasses import asdict 
 import json 
 
-consolidate_path = None 
+import yaml 
+
+consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/Llama-3.2-3Bdcp" 
+with open("/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/evals/0000000100/config.yaml", "r") as file: 
+    cfg = yaml.safe_load(file) 
 
 print(colored("Loading model", "cyan")) 
 model, tokenizer, train_cfg = load_consolidated_model_and_tokenizer(

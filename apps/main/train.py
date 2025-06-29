@@ -369,6 +369,29 @@ def train(args: TrainArgs):
         time_last_log = timer()
         gc.collect() 
         
+        from apps.main.eval import (
+            launch_eval,
+            EVAL_FOLDER_NAME,
+            EvalArgs,
+        )
+
+        eval_args = dataclass_from_dict(EvalArgs, args.eval) 
+
+        eval_args.global_step = train_state.step
+        eval_args.ckpt_dir = str(checkpoint.existing_saves[-1])
+        eval_args.dump_dir = str(
+            os.path.join(
+                args.dump_dir,
+                "evals",
+                EVAL_FOLDER_NAME.format(train_state.step),
+            )
+        )
+        eval_args.metric_log_dir = args.dump_dir
+        print(colored("eval_args {}".format(eval_args), "green")) 
+        print() 
+        launch_eval(eval_args) 
+        exit(0) 
+        
         while train_state.step < args.steps: 
             # We constrain train_state.acc_step to be in range 0 to args.grad_acc_steps - 1
             train_state.acc_step += 1

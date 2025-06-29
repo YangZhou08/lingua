@@ -1,0 +1,59 @@
+# Evaluation configuration for lingua model
+# This config is used with apps/main/eval.py
+
+# Basic evaluation settings
+name: "evals"
+ckpt_dir: "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/evals/0000000100"
+dump_dir: "./eval_results"  # Directory to save evaluation results
+metric_log_dir: "./metric_logs"  # Directory to save metric logs
+
+# Generator configuration (PackedCausalTransformerGeneratorArgs)
+generator:
+  temperature: 0.0  # Temperature for sampling (0.0 for greedy)
+  top_p: null  # Top-p sampling (null to disable)
+  top_k: null  # Top-k sampling (null to disable)
+  max_gen_len: 512  # Maximum number of tokens to generate
+  max_tokens: 1024  # Maximum number of tokens that can go through the model
+  max_prompt_len: null  # Maximum prompt length (null for auto)
+  until: []  # Stop generation when these strings appear
+  compile_prefilling: false  # Whether to compile the prefill function
+  reduce_generation_overhead: false  # Whether to reduce generation overhead
+  show_progress: false  # Whether to show progress bars
+  dtype: "bf16"  # Data type for model (fp32, bf16)
+  device: "cuda"  # Device to run on
+
+# LM-Eval Harness configuration (LMHarnessArgs)
+harness:
+  tasks: null  # List of tasks to evaluate on (null for all)
+  num_fewshot: null  # Number of few-shot examples
+  device: null  # Device override
+  use_cache: null  # Cache directory for requests
+  cache_requests: false  # Whether to cache requests
+  rewrite_requests_cache: false  # Whether to rewrite cache
+  delete_requests_cache: false  # Whether to delete cache
+  limit: null  # Limit number of examples
+  bootstrap_iters: 100000  # Number of bootstrap iterations
+  check_integrity: false  # Check data integrity
+  write_out: false  # Write detailed outputs
+  log_samples: true  # Log sample outputs
+  system_instruction: null  # System instruction for chat models
+  apply_chat_template: false  # Apply chat template
+  fewshot_as_multiturn: false  # Treat fewshot as multiturn
+  gen_kwargs: null  # Generation kwargs as string
+  verbosity: "INFO"  # Logging verbosity
+  predict_only: false  # Only predict, don't compute metrics
+  random_seed: 0  # Random seed
+  numpy_random_seed: 1234  # NumPy random seed
+  torch_random_seed: 1234  # PyTorch random seed
+  fewshot_random_seed: 1234  # Fewshot random seed
+
+# Validation configuration (ValidationArgs) - optional
+validation:
+  max_steps: null  # Maximum validation steps (null for all)
+  use_val_from_train_src: true  # Use validation from training sources
+  root_dir: ""  # Root directory for validation data
+  sources: []  # Additional validation sources
+
+# Optional settings
+wandb: null  # Weights & Biases configuration
+global_step: null  # Global step for in-training evaluation 

@@ -236,17 +236,19 @@ def launch_eval(cfg: EvalArgs):
 
     consolidate_path = str(consolidate_path)
     torch.distributed.barrier()
-    logger.info("Loading model")
+    logger.info("Loading model") 
+    print(colored("consolidate_path {}".format(consolidate_path), "green")) 
     model, tokenizer, train_cfg = load_consolidated_model_and_tokenizer(
         consolidate_path,
         model_cls=LMTransformer,
         model_args_cls=LMTransformerArgs,
     )
     logger.info("Model loaded")
-    model.eval()
+    model.eval() 
+    print(colored("generator config {}".format(cfg.generator), "green")) 
     generator = PackedCausalTransformerGenerator(cfg.generator, model, tokenizer)
 
-    wrap = EvalHarnessLM(generator)
+    wrap = EvalHarnessLM(generator) 
     results = simple_evaluate(wrap, **asdict(cfg.harness))
     print(results) 
     val_results =  None 
