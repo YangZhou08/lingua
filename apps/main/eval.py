@@ -246,8 +246,9 @@ def launch_eval(cfg: EvalArgs):
     model, tokenizer, train_cfg = load_consolidated_model_and_tokenizer(
         consolidate_path,
         model_cls=LMTransformer,
-        model_args_cls=LMTransformerArgs,
-    )
+        model_args_cls=LMTransformerArgs, 
+        weights_only = True, 
+    ) 
     logger.info("Model loaded") 
     model.eval() 
     print(colored("generator config {}".format(cfg.generator), "yellow")) 
