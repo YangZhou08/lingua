@@ -242,7 +242,7 @@ def launch_eval(cfg: EvalArgs):
     print(colored("consolidate_path {}".format(consolidate_path), "green")) 
     
     # TODO: remove the following hard 
-    consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/Llama-3.2-3B/original" 
+    consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/llama3bcheckpt/original" 
     model, tokenizer, train_cfg = load_consolidated_model_and_tokenizer(
         consolidate_path,
         model_cls=LMTransformer,
