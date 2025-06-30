@@ -417,10 +417,10 @@ def load_consolidated_model_and_tokenizer(
     tokenizer = build_tokenizer(config.data.tokenizer.name, config.data.tokenizer.path)
     model = model_cls(model_args)
     st_dict = torch.load(ckpt_path / CONSOLIDATE_NAME, weights_only=True) 
-    if weights_only: 
-        st_dict = st_dict[""] 
-    else: 
+    if not weights_only: 
         model.load_state_dict(st_dict["model"]) 
+    else: 
+        model.load_state_dict(st_dict) 
     model = model.cuda().eval()
     for param in model.parameters():
         param.data = param.data.to(dtype=param_dtype)
