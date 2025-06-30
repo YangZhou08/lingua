@@ -16,7 +16,7 @@ import json
 import yaml 
 
 # consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/Llama-3.2-3Bdcp" 
-consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000100/consolidated" 
+consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/llama3bcheckpt/original" 
 with open("/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/evals/0000000100/config.yaml", "r") as file: 
     cfg = yaml.safe_load(file) 
 
