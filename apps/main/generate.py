@@ -403,7 +403,8 @@ class PackedCausalTransformerGenerator:
 def load_consolidated_model_and_tokenizer(
     consolidated_path,
     model_cls=LMTransformer,
-    model_args_cls=LMTransformerArgs,
+    model_args_cls=LMTransformerArgs, 
+    weights_only = False, 
 ):
     ckpt_path = Path(consolidated_path)
     config = ckpt_path / "params.json"
@@ -415,8 +416,11 @@ def load_consolidated_model_and_tokenizer(
     model_args = dataclass_from_dict(model_args_cls, config.model, strict=False)
     tokenizer = build_tokenizer(config.data.tokenizer.name, config.data.tokenizer.path)
     model = model_cls(model_args)
-    st_dict = torch.load(ckpt_path / CONSOLIDATE_NAME, weights_only=True)
-    model.load_state_dict(st_dict["model"])
+    st_dict = torch.load(ckpt_path / CONSOLIDATE_NAME, weights_only=True) 
+    if weights_only: 
+        st_dict = st_dict[""] 
+    else: 
+        model.load_state_dict(st_dict["model"]) 
     model = model.cuda().eval()
     for param in model.parameters():
         param.data = param.data.to(dtype=param_dtype)
