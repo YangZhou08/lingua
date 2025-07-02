@@ -239,6 +239,9 @@ def write_model(
                 for file in checkpoint_list
             ] 
         print(loaded.keys()) 
+        if "optim" in loaded.keys(): 
+            loaded = loaded["model"] 
+            print("keys in loaded {}".format(loaded.keys())) 
         param_count = 0
         index_dict = {"weight_map": {}}
         for layer_i in range(n_layers):
