@@ -237,7 +237,8 @@ def write_model(
             loaded = [
                 torch.load(os.path.join(input_base_path, file), map_location="cpu", weights_only=True)
                 for file in checkpoint_list
-            ]
+            ] 
+        print(loaded.keys()) 
         param_count = 0
         index_dict = {"weight_map": {}}
         for layer_i in range(n_layers):
