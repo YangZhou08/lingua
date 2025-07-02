@@ -101,6 +101,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0": ".jsonl.zst",
         "dclm_baseline_1.0_10prct": ".jsonl.zst",
         "megamath_pro_web": ".jsonl", 
+        "openr1_220k": ".jsonl", 
     }[dataset]
     cat_command = {
         "fineweb_edu": "cat {}",
@@ -108,6 +109,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0": "zstdcat {} && echo",
         "dclm_baseline_1.0_10prct": "zstdcat {} && echo", 
         "megamath_pro_web": "cat {}", 
+        "openr1_220k": "cat {}", 
     }[dataset]
     allow_patterns = {
         "fineweb_edu": None,
@@ -115,17 +117,18 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0": "*.jsonl.zst",
         "dclm_baseline_1.0_10prct": "global-shard_01_of_10/*.jsonl.zst", 
         "megamath_pro_web": None, 
+        "openr1_220k": None, 
     }[dataset]
     suffix = ".jsonl"
     k_validation = 0  # Number of lines to take from each chunk for validation
 
     # Setup terashuf
     terashuf_dir = setup_terashuf(work_dir)
-    
+
     # Download dataset
     download_dataset(repo_id, src_dir, allow_patterns) 
 
-    if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
+    if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web", "openr1_220k"]: 
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
 
     # Set up environment variables
