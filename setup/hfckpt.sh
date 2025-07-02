@@ -1,0 +1,1 @@
+python convert_consolidate_hf.py --input_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000100/consolidated --output_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints --llama_version 3.2 --num_shards 1 
