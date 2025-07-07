@@ -6,7 +6,7 @@ def generate_textfield(example):
     return {"text": inputtext} 
 
 def preprocess_data(datasetpath, outputpath): 
-    dataset = load_dataset(datasetpath, "all", split = "train") 
+    dataset = load_dataset(datasetpath, split = "train") 
     dataset = dataset.map(generate_textfield) 
     
     # os.makedirs(outputpath, exist_ok=True) 
