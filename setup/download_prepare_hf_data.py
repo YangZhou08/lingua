@@ -102,6 +102,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0_10prct": ".jsonl.zst",
         "megamath_pro_web": ".jsonl", 
         "openr1_220k": ".jsonl", 
+        "a-m_team": ".jsonl", 
     }[dataset]
     cat_command = {
         "fineweb_edu": "cat {}",
@@ -110,6 +111,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0_10prct": "zstdcat {} && echo", 
         "megamath_pro_web": "cat {}", 
         "openr1_220k": "cat {}", 
+        "a-m_team": "cat {}", 
     }[dataset]
     allow_patterns = {
         "fineweb_edu": None,
@@ -118,6 +120,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         "dclm_baseline_1.0_10prct": "global-shard_01_of_10/*.jsonl.zst", 
         "megamath_pro_web": None, 
         "openr1_220k": None, 
+        "a-m_team": ["math_7b_*.jsonl", "math_r1_*.jsonl"], 
     }[dataset]
     suffix = ".jsonl"
     k_validation = 0  # Number of lines to take from each chunk for validation
@@ -126,7 +129,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     terashuf_dir = setup_terashuf(work_dir)
 
     # Download dataset
-    # download_dataset(repo_id, src_dir, allow_patterns) 
+    download_dataset(repo_id, src_dir, allow_patterns) 
     
     print(colored("##### Downloaded {} #####".format(dataset), "red"), flush = True) 
 
