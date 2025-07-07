@@ -32,5 +32,6 @@ wandb login --relogin fbb26fc8718b8e58d743b5cdcabaa2396656f773
 
 gpustat 
 pwd 
+cd /fsx-storygen/jwzhao/yangzho6/lingua 
 
 torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/webonly.yaml 
