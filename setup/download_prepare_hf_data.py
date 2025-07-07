@@ -127,13 +127,15 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
 
     # Download dataset
     download_dataset(repo_id, src_dir, allow_patterns) 
+    
+    print(colored("##### Downloaded {} #####".format(dataset), "red"), flush = True) 
 
     if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
         print(colored("##### Processing {} #####".format(dataset), "red")) 
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
     elif dataset in ["openr1_220k"]: 
-        print(colored("##### Processing {} #####".format(dataset), "red")) 
-        parquet_to_jsonl(dataset, work_dir, src_dir + "/all", src_dir) 
+        print(colored("##### Processing {} #####".format(dataset), "red"), flush = True) 
+        parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"
