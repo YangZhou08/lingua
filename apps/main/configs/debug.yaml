@@ -54,10 +54,4 @@ checkpoint:
         keep: 1
 
 logging:
-    freq: 10
-
-eval:
-    harness:
-        tasks:
-            - hellaswag
-            - arc_challenge
+    freq: 10 
