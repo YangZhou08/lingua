@@ -55,4 +55,3 @@ checkpoint:
 
 logging:
     freq: 10 
-    wandb: true 

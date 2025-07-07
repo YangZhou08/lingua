@@ -187,8 +187,7 @@ def validate_train_args(args: TrainArgs, output_size: int):
         args.probe_freq != args.profiling.profile_steps
     ), "Don't profile during probe step"
 
-    if args.logging.wandb is not None:
-        args.logging.wandb.name = args.name
+    args.logging.wandb.name = args.name
 
     if args.probe_freq is not None:
         assert (
