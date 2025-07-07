@@ -131,7 +131,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
     elif dataset in ["openr1_220k"]: 
-        parquet_to_jsonl(dataset, work_dir, src_dir + "/all", src_dir + "/all")  
+        parquet_to_jsonl(dataset, work_dir, src_dir + "/all", src_dir + "/all") 
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"
