@@ -1,11 +1,11 @@
-python download_prepare_hf_data.py \
- megamath_pro_web 64 \
- --data_dir ./data \
- --seed 42 \
- --nchunks 8 
-
 # python download_prepare_hf_data.py \
-#  openr1_220k 64 \
+#  megamath_pro_web 64 \
 #  --data_dir ./data \
 #  --seed 42 \
 #  --nchunks 8 
+
+python download_prepare_hf_data.py \
+ openr1_220k 64 \
+ --data_dir ./data \
+ --seed 42 \
+ --nchunks 8 
