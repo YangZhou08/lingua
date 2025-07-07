@@ -10,6 +10,6 @@ def preprocess_data(datasetpath, outputpath):
     dataset.to_parquet(outputpath) 
 
 if __name__ == "__main__": 
-    datasetpath = "fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k" 
-    outputpath = "fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k_processed"  
+    datasetpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k" 
+    outputpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k_processed"  
     preprocess_data(datasetpath, outputpath) 
