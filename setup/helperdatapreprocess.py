@@ -1,4 +1,5 @@
 from datasets import load_dataset 
+import os 
 
 def generate_textfield(example): 
     inputtext = "Question: {}\nAnswer: {}".format(example.pop("problem"), example.pop("generations")[0]) 
@@ -7,6 +8,8 @@ def generate_textfield(example):
 def preprocess_data(datasetpath, outputpath): 
     dataset = load_dataset(datasetpath, "all", split = "train") 
     dataset = dataset.map(generate_textfield) 
+    
+    os.makedirs(outputpath, exist_ok=True) 
     dataset.to_parquet(outputpath) 
 
 if __name__ == "__main__": 
