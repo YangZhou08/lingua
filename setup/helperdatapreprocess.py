@@ -2,7 +2,7 @@ from datasets import load_dataset
 import os 
 
 def generate_textfield(example): 
-    inputtext = "Question: {}\nAnswer: {}".format(example.pop("problem"), example.pop("generations")[0]) 
+    inputtext = "Question: {}\nAnswer: {}".format(example.pop("question"), example.pop("answer")) 
     return {"text": inputtext} 
 
 def preprocess_data(datasetpath, outputpath): 
@@ -10,9 +10,10 @@ def preprocess_data(datasetpath, outputpath):
     dataset = dataset.map(generate_textfield) 
     
     # os.makedirs(outputpath, exist_ok=True) 
-    dataset.to_parquet(outputpath) 
+    # dataset.to_parquet(outputpath) 
+    dataset.to_json(outputpath) 
 
 if __name__ == "__main__": 
-    datasetpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k" 
-    outputpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k_processed.parquet" 
+    datasetpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/a-m_team_primitive" 
+    outputpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/a-m_team/a-m_team_primitive.jsonl" 
     preprocess_data(datasetpath, outputpath) 
