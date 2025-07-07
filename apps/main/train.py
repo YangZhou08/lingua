@@ -348,6 +348,24 @@ def train(args: TrainArgs):
             )
 
         gc.disable() 
+        # train loop
+        model.train()
+        metric_logger = context_stack.enter_context(
+            MetricLogger(Path(args.dump_dir) / "metrics.jsonl", args)
+        )
+        data_loader = context_stack.enter_context(
+            build_dataloader_from_args(
+                args.data,
+                state=train_state.data_loader_state,
+            )
+        )
+        torch_profiler = context_stack.enter_context(
+            maybe_run_profiler(args.dump_dir, model, args.profiling)
+        )
+
+        nwords_since_last_log = 0
+        time_last_log = timer()
+        gc.collect()
         
         while train_state.step < args.steps: 
             # We constrain train_state.acc_step to be in range 0 to args.grad_acc_steps - 1
