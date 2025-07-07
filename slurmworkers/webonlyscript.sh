@@ -17,7 +17,7 @@
 set -x
 
 source /home/yangzho6/miniconda3/etc/profile.d/conda.sh
-conda activate nanotronn 
+conda activate lingua_2506232 
 
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7  # Specify which GPUs to use
 python -c "import torch; print(torch.cuda.is_available())"  # Check if CUDA is available 
