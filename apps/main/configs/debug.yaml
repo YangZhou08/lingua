@@ -31,7 +31,7 @@ model:
 data:
     root_dir: data/shuffled
     sources:
-        megamath_pro_web: 1.0 
+        openr1_220k: 1.0 
     batch_size: 1 
     prefetch_size: 64
     seq_len: 8192 

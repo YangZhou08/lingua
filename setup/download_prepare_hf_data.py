@@ -135,7 +135,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
     elif dataset in ["openr1_220k"]: 
         print(colored("##### Processing {} in {} #####".format(dataset, src_dir), "red"), flush = True) 
-        work_dir = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k_processed" 
+        work_dir = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k" 
         parquet_to_jsonl(dataset, work_dir, work_dir, work_dir)  
 
     # Set up environment variables
@@ -150,12 +150,17 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     #     f"split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}"
     #     "; trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE;"
     # ) 
-    # run_command(
-    #     f"trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE; "
-    #     f"ulimit -n 100000 && "
-    #     f"find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | "
-    #     f"split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}"
-    # ) 
+    print(f"trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE; \n \
+        ulimit -n 100000 && \n \
+        find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | \n \
+        split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}\n"
+    ) 
+    run_command(
+        f"trap 'echo \"Caught signal 13, exiting with code 1\"; exit 1' SIGPIPE; "
+        f"ulimit -n 100000 && "
+        f"find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | "
+        f"split -n r/{nchunks} -d --suffix-length 2 --additional-suffix {suffix} - {out_dir}/{prefix}"
+    ) 
 
     '''
     # Create validation set and remove lines from chunks
