@@ -135,7 +135,8 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
     elif dataset in ["openr1_220k"]: 
         print(colored("##### Processing {} in {} #####".format(dataset, src_dir), "red"), flush = True) 
-        parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
+        work_dir = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k_processed" 
+        parquet_to_jsonl(dataset, work_dir, work_dir, work_dir)  
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"
