@@ -132,6 +132,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
         print(colored("##### Processing {} #####".format(dataset), "red")) 
         parquet_to_jsonl(dataset, work_dir, src_dir, src_dir) 
     elif dataset in ["openr1_220k"]: 
+        print(colored("##### Processing {} #####".format(dataset), "red")) 
         parquet_to_jsonl(dataset, work_dir, src_dir + "/all", src_dir) 
 
     # Set up environment variables
@@ -139,7 +140,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     os.environ["SEED"] = f"{seed}"
 
     # Run the original shuffling and splitting command
-    terashuf_executable = os.path.join(terashuf_dir, "terashuf")
+    terashuf_executable = os.path.join(terashuf_dir, "terashuf") 
     # run_command(
     #     f"ulimit -n 100000 && "
     #     f"find {src_dir} -type f -name '*{orig_extension}' -print0 | xargs -0 -I {{}} sh -c '{cat_command}' | {terashuf_executable} | "
