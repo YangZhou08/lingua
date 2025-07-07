@@ -5,8 +5,8 @@ import os
 import time
 import subprocess
 import requests
-from huggingface_hub import snapshot_download
-
+from huggingface_hub import snapshot_download 
+from termcolor import colored 
 
 def run_command(command):
     print(f"Running: {command}")
