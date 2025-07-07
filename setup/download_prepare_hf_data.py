@@ -127,6 +127,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
 
     # Download dataset
     download_dataset(repo_id, src_dir, allow_patterns) 
+    exit(0) 
 
     if dataset in ["fineweb_edu", "fineweb_edu_10bt", "megamath_pro_web"]: 
         print(colored("##### Processing {} #####".format(dataset), "red")) 
