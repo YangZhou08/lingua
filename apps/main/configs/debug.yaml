@@ -60,8 +60,11 @@ logging:
         entity: "Stevenzhou0816100" 
         name: "debug" 
 
-eval: 
+eval:
     harness:
         tasks:
-            - hellaswag 
-              num_fewshot: 5 
+            - hellaswag
+            - task: nq_open
+              num_fewshot: 5
+    validation:
+        max_steps: 20 
