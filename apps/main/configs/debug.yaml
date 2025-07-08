@@ -39,7 +39,7 @@ data:
     load_async: true
     tokenizer:
         name: tiktoken 
-        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/tokenizer.model 
+        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
 
 profiling:
     run: true
