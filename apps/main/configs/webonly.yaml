@@ -52,3 +52,7 @@ checkpoint:
 
 logging:
     freq: 10 
+    wandb: 
+        project: "midtrainingsyncthmath" 
+        entity: "Stevenzhou0816100" 
+        name: "debug" 
