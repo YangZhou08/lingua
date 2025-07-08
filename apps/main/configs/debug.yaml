@@ -39,7 +39,8 @@ data:
     load_async: true
     tokenizer:
         name: sp 
-        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
+        # path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
+        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original 
 
 profiling:
     run: true
