@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=12        # Request 12 CPUs per task
 #SBATCH --partition=learn  # Specify the storygen_high queue/partition
 #SBATCH -q storygen_high
-#SBATCH --time=120:00:00           # Set time limit to 24 hours 
+#SBATCH --time=2:00:00           # Set time limit to 24 hours 
 #SBATCH --output=job_%j.out       # Output file (%j is the job ID) 
 #SBATCH --mem=512G 
 
