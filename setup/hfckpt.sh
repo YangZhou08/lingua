@@ -1,1 +1,5 @@
-python convert_consolidate_hf.py --input_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated --output_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/hf --llama_version 3.2 --num_shards 1 
+inputpath="/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated --output_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated" 
+cp /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/llama3b0100/consolidated/tokenizer.model $inputpath 
+echo "Copied tokenizer.model to $inputpath" 
+
+python convert_consolidate_hf.py --input_dir $inputpath --llama_version 3.2 --num_shards 1 
