@@ -63,8 +63,4 @@ logging:
 eval:
     harness:
         tasks:
-            - hellaswag
-            - task: nq_open
-              num_fewshot: 5
-    validation:
-        max_steps: 20 
+            - hellaswag 
