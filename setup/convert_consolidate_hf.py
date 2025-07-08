@@ -591,7 +591,6 @@ def main():
         from lingua.checkpoint import consolidate_checkpoints 
         consolidate_path = consolidate_checkpoints(args.input_dir) 
         args.input_dir = consolidate_path 
-    exit(0) 
 
     spm_path = os.path.join(args.input_dir, "tokenizer.model")
     vocab_size = len(
