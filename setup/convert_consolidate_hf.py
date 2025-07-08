@@ -571,13 +571,27 @@ def main():
         action="store_true",
         default=False,
         help="Whether the model is an instruct model or not. Will affect special tokens and chat template.",
-    )
+    ) 
+    
+    parser.add_argument(
+        "--dcp_dir", 
+        help="Location of DCP directory", 
+        action="store_true", 
+        default=False, 
+    ) 
+    
     args = parser.parse_args()
     if args.model_size is None and args.num_shards is None:
         raise ValueError("You have to set at least `num_shards` if you are not giving the `model_size`")
     if args.special_tokens is None:
         # no special tokens by default
-        args.special_tokens = DEFAULT_LLAMA_SPECIAL_TOKENS.get(str(args.llama_version), [])
+        args.special_tokens = DEFAULT_LLAMA_SPECIAL_TOKENS.get(str(args.llama_version), []) 
+    
+    if args.dcp_dir: 
+        from lingua.checkpoint import consolidate_checkpoints 
+        consolidate_path = consolidate_checkpoints(args.input_dir) 
+        args.input_dir = consolidate_path 
+    exit(0) 
 
     spm_path = os.path.join(args.input_dir, "tokenizer.model")
     vocab_size = len(
