@@ -1,4 +1,4 @@
-inputpath="/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated --output_dir /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated" 
+inputpath="/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/0000000620/consolidated 
 cp /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/llama3b0100/consolidated/tokenizer.model $inputpath 
 echo "Copied tokenizer.model to $inputpath" 
 
