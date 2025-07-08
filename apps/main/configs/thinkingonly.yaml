@@ -31,15 +31,16 @@ model:
 data:
     root_dir: data/shuffled
     sources:
-        openr1_220k: 1.0 
+        openr1_220k: 0.15 
+        a-m_team: 0.85 
     batch_size: 1 
     prefetch_size: 64
     seq_len: 8192 
     n_views: 2
     load_async: true
     tokenizer:
-        name: bytes 
-        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama 
+        name: tiktoken 
+        path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
 
 profiling:
     run: true
@@ -55,3 +56,7 @@ checkpoint:
 
 logging:
     freq: 10 
+    wandb: 
+        project: "midtrainingsyncthmath" 
+        entity: "Stevenzhou0816100" 
+        name: "thinkingonly" 
