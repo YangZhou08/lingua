@@ -13,7 +13,8 @@ import torch
 import torch.nn as nn
 
 from lingua.distributed import get_is_master
-import wandb
+import wandb 
+from termcolor import colored 
 
 logger = logging.getLogger()
 
