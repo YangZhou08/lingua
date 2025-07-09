@@ -35,4 +35,4 @@ pwd
 cd /fsx-storygen/jwzhao/yangzho6/lingua 
 git pull 
 
-torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/thinkingonly.yaml 
+torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/mixture.yaml 
