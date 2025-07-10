@@ -7,6 +7,6 @@ wandb login --relogin fbb26fc8718b8e58d743b5cdcabaa2396656f773
 # python -m lingua.stool script=apps.main.train config=apps/main/configs/debug.yaml nodes=1 partition=<partition> 
 # if you want to launch locally you can use torchrun 
 
-torchrun --nproc-per-node 4 -m apps.main.train config=apps/main/configs/thinkingonly.yaml 
+torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/webonly.yaml 
 # or you can also launch on 1 GPU
 # python -m apps.main.train config=apps/main/configs/debug.yaml 
