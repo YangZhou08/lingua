@@ -6,6 +6,7 @@ from torch.distributed.checkpoint.format_utils import (
     torch_save_to_dcp,
     dcp_to_torch_save,
 ) 
+from pathlib import Path 
 
 def consolidate_checkpoints(ckpt_dir: str):
     """
@@ -17,13 +18,13 @@ def consolidate_checkpoints(ckpt_dir: str):
 
     Returns the path to the consolidated checkpoint
     """
-    consolidate_path = ckpt_dir / CONSOLIDATE_FOLDER
+    consolidate_path = Path(ckpt_dir) / CONSOLIDATE_FOLDER
     if not (consolidate_path / CONSOLIDATE_NAME).exists():
         consolidate_path.mkdir(exist_ok=True)
         print(f"Consolidating to: {str(consolidate_path)}") 
         dcp_to_torch_save(ckpt_dir, str(consolidate_path / CONSOLIDATE_NAME))
         (consolidate_path / CONFIG_NAME).write_text(
-            (ckpt_dir / CONFIG_NAME).read_text()
+            (Path(ckpt_dir) / CONFIG_NAME).read_text()
         )
         print("Consolidated !") 
     return consolidate_path
