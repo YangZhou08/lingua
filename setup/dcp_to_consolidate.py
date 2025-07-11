@@ -30,4 +30,4 @@ def consolidate_checkpoints(ckpt_dir: str):
     return consolidate_path
 
 consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/thinkingonly/checkpoints/010000consoli" 
-consolidate_path = consolidate_checkpoints("/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/thinkingonly/checkpoints/0000010000") 
+consolidate_path = consolidate_checkpoints("/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly/checkpoints/0000010000") 
