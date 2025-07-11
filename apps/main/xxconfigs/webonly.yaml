@@ -2,7 +2,8 @@
 
 # dump_dir: !!CHANGETHIS!!
 
-dump_dir: /data/users/yangzho6/lingua/checkpoints/webonly 
+# dump_dir: /data/users/yangzho6/lingua/checkpoints/webonly # debugging 
+dump_dir: /mnt/demo_torchx_bucket/out/${app_id} 
 
 name: "webonly"
 steps: 1000 
@@ -52,7 +53,7 @@ checkpoint:
 
 logging:
     freq: 10 
-    wandb: 
-        project: "midtrainingsyncthmath" 
-        entity: "Stevenzhou0816100" 
-        name: "webonly" 
+    # wandb: 
+    #     project: "midtrainingsyncthmath" 
+    #     entity: "Stevenzhou0816100" 
+    #     name: "webonly" 
