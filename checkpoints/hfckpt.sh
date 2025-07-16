@@ -1,3 +1,5 @@
+conda activate verl3 
+
 rootpath=$1 
 python dcp_to_consolidate.py --ckpt_dir $rootpath 
 
