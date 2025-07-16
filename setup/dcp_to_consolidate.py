@@ -7,6 +7,11 @@ from torch.distributed.checkpoint.format_utils import (
     dcp_to_torch_save,
 ) 
 from pathlib import Path 
+from argparse import ArgumentParser 
+
+parser = ArgumentParser() 
+parser.add_argument("--ckpt_dir", type=str, required=True) 
+args = parser.parse_args() 
 
 def consolidate_checkpoints(ckpt_dir: str):
     """
@@ -27,7 +32,6 @@ def consolidate_checkpoints(ckpt_dir: str):
             (Path(ckpt_dir) / CONFIG_NAME).read_text()
         )
         print("Consolidated !") 
-    return consolidate_path
+    return consolidate_path 
 
-consolidate_path = "/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/thinkingonly/checkpoints/010000consoli" 
-consolidate_path = consolidate_checkpoints("/fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly/checkpoints/0000010000") 
+consolidate_path = consolidate_checkpoints(args.ckpt_dir) 
