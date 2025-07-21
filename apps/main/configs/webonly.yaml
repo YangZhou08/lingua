@@ -2,7 +2,7 @@
 
 # dump_dir: !!CHANGETHIS!!
 
-dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly3 
+dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly2 
 
 name: "webonly"
 steps: 3000 
