@@ -6,8 +6,7 @@
 #SBATCH --gres=gpu:8              # Request 8 GPUs
 #SBATCH --cpus-per-task=12        # Request 12 CPUs per task
 #SBATCH --partition=learn  # Specify the storygen_high queue/partition
-#SBATCH -q storygen_high
-#SBATCH --time=120:00:00           # Set time limit to 24 hours 
+#SBATCH --time=12:00:00           # Set time limit to 24 hours 
 #SBATCH --output=job_%j.out       # Output file (%j is the job ID) 
 #SBATCH --mem=512G 
 
@@ -35,4 +34,4 @@ pwd
 cd /fsx-storygen/jwzhao/yangzho6/lingua 
 git pull 
 
-torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/mixture.yaml 
+torchrun --nproc-per-node 8 -m apps.main.train config=apps/main/configs/webonly.yaml 
