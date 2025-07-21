@@ -39,7 +39,7 @@ data:
     n_views: 2
     load_async: true
     tokenizer:
-        name: tiktoken 
+        name: llama3 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
 
 profiling:
@@ -48,7 +48,7 @@ profiling:
 checkpoint:
     init_ckpt_path: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/Llama-3.2-3Bdcp 
     dump:
-        every: 1000 
+        every: 500 
         keep: 5 
 
 logging:
