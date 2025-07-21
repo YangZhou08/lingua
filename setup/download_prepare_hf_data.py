@@ -129,7 +129,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     terashuf_dir = setup_terashuf(work_dir)
 
     # Download dataset
-    # download_dataset(repo_id, src_dir, allow_patterns) 
+    download_dataset(repo_id, src_dir, allow_patterns) 
     
     print(colored("##### Downloaded {} #####".format(dataset), "red"), flush = True) 
 
@@ -139,7 +139,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     elif dataset in ["openr1_220k"]: 
         print(colored("##### Processing {} in {} #####".format(dataset, src_dir), "red"), flush = True) 
         work_dir = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/openr1_220k" 
-        # parquet_to_jsonl(dataset, work_dir, work_dir, work_dir) 
+        parquet_to_jsonl(dataset, work_dir, work_dir, work_dir) 
 
     # Set up environment variables
     os.environ["MEMORY"] = f"{memory}"

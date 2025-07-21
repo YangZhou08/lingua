@@ -2,10 +2,10 @@
 
 # dump_dir: !!CHANGETHIS!!
 
-dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly 
+dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly2 
 
 name: "webonly"
-steps: 15000 
+steps: 3000 
 probe_freq: 10000 
 grad_acc_steps: 8 
 seed: 777
@@ -37,6 +37,8 @@ data:
     seq_len: 8192 
     n_views: 2
     load_async: true
+    add_bos: true
+    add_eos: true
     tokenizer:
         name: tiktoken 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
