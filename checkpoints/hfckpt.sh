@@ -1,3 +1,4 @@
+source /home/yangzho6/miniconda3/etc/profile.d/conda.sh 
 conda activate verl3 
 
 rootpath=$1 
