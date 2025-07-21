@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:8              # Request 8 GPUs
 #SBATCH --cpus-per-task=12        # Request 12 CPUs per task
 #SBATCH --partition=learn  # Specify the storygen_high queue/partition
-#SBATCH --time=12:00:00           # Set time limit to 24 hours 
+#SBATCH --time=48:00:00           # Set time limit to 24 hours 
 #SBATCH --output=job_%j.out       # Output file (%j is the job ID) 
 #SBATCH --mem=512G 
 

@@ -5,7 +5,7 @@
 dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly2 
 
 name: "webonly"
-steps: 3000 
+steps: 15000 
 probe_freq: 10000 
 grad_acc_steps: 8 
 seed: 777
