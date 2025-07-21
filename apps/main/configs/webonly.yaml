@@ -2,7 +2,7 @@
 
 # dump_dir: !!CHANGETHIS!!
 
-dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly2 
+dump_dir: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/webonly3 
 
 name: "webonly"
 steps: 3000 
@@ -40,7 +40,7 @@ data:
     add_bos: true
     add_eos: true
     tokenizer:
-        name: tiktoken 
+        name: llama3 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
 
 profiling:
