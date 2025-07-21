@@ -34,7 +34,7 @@ data:
         openr1_220k: 0.15 
         a-m_team: 0.85 
     batch_size: 1 
-    prefetch_size: 64
+    prefetch_size: 1024 
     seq_len: 8192 
     n_views: 2
     load_async: true
