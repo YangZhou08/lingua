@@ -523,7 +523,8 @@ def init_choice_state(
     for dataset_path in sources:
         jsonl_state = distribute_data_to_rank(
             os.path.join(root_dir, dataset_path), rank, world_size, file_pattern
-        )
+        ) 
+        print(colored("rank {} chunkid {}".format(rank, jsonl_state["file_path"]), "green")) 
         data_path_to_jsonl_state[dataset_path] = jsonl_state
 
     multi_rng_state = np.random.default_rng(
