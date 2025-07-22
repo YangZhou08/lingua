@@ -10,7 +10,7 @@ probe_freq: 10000
 grad_acc_steps: 8 
 seed: 777
 optim:
-    lr: 3e-5 
+    lr: 5e-6 
     warmup: 1000 
     lr_min_ratio: 0.1 
     clip: 1.0 
