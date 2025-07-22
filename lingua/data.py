@@ -495,7 +495,8 @@ def distribute_data_to_rank(dataset_path: str, rank: int, world_size: int, file_
     """
     dataset_chunks = find_and_sanitize_chunks(dataset_path, world_size, file_pattern)
     n_ranks_per_chunk = world_size // len(dataset_chunks)
-    rank_to_jsonl_iterator_params = []
+    rank_to_jsonl_iterator_params = [] 
+    print(colored("dataset_chunks {}".format(dataset_chunks), "yellow")) 
     for chunk_path in dataset_chunks:
         for i in range(n_ranks_per_chunk):
             rank_to_jsonl_iterator_params.append(
