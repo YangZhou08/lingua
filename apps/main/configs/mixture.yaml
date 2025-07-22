@@ -39,6 +39,8 @@ data:
     seq_len: 8192 
     n_views: 2
     load_async: true
+    add_bos: true
+    add_eos: true
     tokenizer:
         name: llama3 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
