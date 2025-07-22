@@ -129,7 +129,7 @@ def main(dataset, memory, data_dir, seed=42, nchunks=32):
     terashuf_dir = setup_terashuf(work_dir)
 
     # Download dataset
-    download_dataset(repo_id, src_dir, allow_patterns) 
+    # download_dataset(repo_id, src_dir, allow_patterns) 
     
     print(colored("##### Downloaded {} #####".format(dataset), "red"), flush = True) 
 

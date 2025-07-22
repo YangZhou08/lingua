@@ -252,8 +252,8 @@ class Llama3Tokenizer(Tokenizer):
         self,
         s: str,
         *,
-        bos: bool,
-        eos: bool,
+        add_bos: bool,
+        add_eos: bool,
         allowed_special: Union[Literal["all"], AbstractSet[str]] = set(),
         disallowed_special: Union[Literal["all"], Collection[str]] = (),
     ) -> List[int]:
@@ -305,9 +305,9 @@ class Llama3Tokenizer(Tokenizer):
                     disallowed_special=disallowed_special,
                 )
             )
-        if bos:
+        if add_bos:
             t.insert(0, self.bos_id)
-        if eos:
+        if add_eos:
             t.append(self.eos_id)
         return t
 
