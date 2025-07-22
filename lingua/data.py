@@ -507,7 +507,7 @@ def distribute_data_to_rank(dataset_path: str, rank: int, world_size: int, file_
                     current_iter=0,
                 )
             )
-
+    print(colored("rank {} chunkid {}".format(rank, rank_to_jsonl_iterator_params[rank]["file_path"]), "yellow")) 
     return rank_to_jsonl_iterator_params[rank]
 
 
