@@ -1,81 +1,90 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
-from copy import deepcopy
 import gc
 import logging
 import os
 import sys
 import time
 from contextlib import ExitStack
+from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from omegaconf import OmegaConf
 import torch
 import torch.distributed
+import torch.distributed.checkpoint as dcp
 import torch.nn.functional as F
+
+import wandb
 import xformers.profiler
-from torch.optim import lr_scheduler
-from torch.distributed.checkpoint.stateful import Stateful 
-from torch.distributed.checkpoint.state_dict import get_model_state_dict, set_model_state_dict 
-import torch.distributed.checkpoint as dcp 
-from torch.distributed._tensor import DTensor
+from apps.main.transformer import (
+    build_fsdp_grouping_plan,
+    get_no_recompute_ops,
+    get_num_flop_per_token,
+    LMTransformer,
+    LMTransformerArgs,
+    LMTransformerArgshfllama,
+    tp_parallelize,
+)
 
 from lingua.args import dataclass_from_dict, dump_config, flatten_dict
 from lingua.checkpoint import CheckpointArgs, CheckpointManager, load_from_checkpoint
 from lingua.data import (
-    DataArgs,
-    PackTokensState,
     build_dataloader_from_args,
+    DataArgs,
     init_dataloader_state_from_args,
+    PackTokensState,
 )
 from lingua.distributed import (
+    check_model_value_range,
+    clean_env,
+    dist_mean_dict,
     DistributedArgs,
     EnvironmentArgs,
-    init_signal_handler,
-    dist_mean_dict,
     get_device_mesh,
     get_is_master,
     get_world_size,
+    init_signal_handler,
     parallelize_model,
+    requeue_slurm_job,
     setup_env,
     setup_torch_distributed,
-    clean_env,
-    requeue_slurm_job,
-    check_model_value_range,
-) 
-from termcolor import colored 
+)
 from lingua.logger import init_logger
-from lingua.metrics import (
+from lingua.optim import build_optimizer, OptimArgs
+from lingua.probe import AutoProbeD
+from lingua.profiling import maybe_run_profiler, ProfilerArgs
+from lingua.stool import launch_job, StoolArgs
+
+# from lingua.metrics import get_num_params, GPUMemoryMonitor, LoggingArgs, MetricLogger
+from lingua.summarywritermetrics import (
+    get_num_params,
     GPUMemoryMonitor,
     LoggingArgs,
     MetricLogger,
-    get_num_params,
 )
-from lingua.optim import OptimArgs, build_optimizer
-from lingua.profiling import ProfilerArgs, maybe_run_profiler
 from lingua.tokenizer import build_tokenizer
-from apps.main.transformer import (
-    LMTransformerArgs,
-    LMTransformer,
-    get_num_flop_per_token,
-    build_fsdp_grouping_plan,
-    tp_parallelize,
-    get_no_recompute_ops,
-) 
-from apps.main.transformer import LMTransformerArgshfllama 
-from lingua.probe import AutoProbeD
-from lingua.stool import StoolArgs, launch_job
+from omegaconf import OmegaConf
+from termcolor import colored
+from torch.distributed._tensor import DTensor
+from torch.distributed.checkpoint.state_dict import (
+    get_model_state_dict,
+    set_model_state_dict,
+)
+from torch.distributed.checkpoint.stateful import Stateful
+from torch.optim import lr_scheduler
 
-import wandb
+logger = logging.getLogger()
 
-logger = logging.getLogger() 
+import json
 
-import json 
+import torch._dynamo
+
+torch._dynamo.config.suppress_errors = True
 
 
 @dataclass
@@ -143,7 +152,9 @@ def validate_train_args(args: TrainArgs, output_size: int):
     assert args.dump_dir, "Dump dir not set"
 
     if args.checkpoint.path is None:
-        logger.info(f"Setting checkpoint path to {str(Path(args.dump_dir) / 'checkpoints')}")
+        logger.info(
+            f"Setting checkpoint path to {str(Path(args.dump_dir) / 'checkpoints')}"
+        )
         args.checkpoint.path = str(Path(args.dump_dir) / "checkpoints")
 
     for source in args.data.sources:
@@ -194,8 +205,8 @@ def validate_train_args(args: TrainArgs, output_size: int):
         args.probe_freq != args.profiling.profile_steps
     ), "Don't profile during probe step"
 
-    if args.logging.wandb is not None: # adding 
-        args.logging.wandb.name = args.name
+    # if args.logging.wandb is not None:  # adding
+    # args.logging.wandb.name = args.name
 
     if args.probe_freq is not None:
         assert (
@@ -247,7 +258,10 @@ def train(args: TrainArgs):
         dp_degree = dp_mesh.size()
         dp_rank = dp_mesh.get_local_rank()
         if args.distributed.dp_shard > 1:
-            dp_rank = dp_rank * world_mesh["dp_shard"].size() + world_mesh["dp_shard"].get_local_rank()
+            dp_rank = (
+                dp_rank * world_mesh["dp_shard"].size()
+                + world_mesh["dp_shard"].get_local_rank()
+            )
             dp_degree *= world_mesh["dp_shard"].size()
 
         logger.info(f"Running on dp rank : {dp_rank}")
@@ -256,28 +270,37 @@ def train(args: TrainArgs):
         torch.manual_seed(args.seed)
         logger.info("Building model")
 
-        # Initializing Model in meta device allows us to initialize models much bigger than 1 gpu's memory 
-        print(colored("args.model {}".format(args.model), "green")) 
-        if args.checkpoint.init_ckpt_path: 
-            print(colored("args.checkpoint.init_ckpt_path {}".format(args.checkpoint.init_ckpt_path), "green")) 
-            with open(os.path.join(args.checkpoint.init_ckpt_path, "params.json"), "r") as f: 
-                args.model = json.loads(f.read()) 
-                args.model = LMTransformerArgshfllama(**args.model["model"]) 
-            print(colored("args.model {}".format(args.model), "green")) 
+        # Initializing Model in meta device allows us to initialize models much bigger than 1 gpu's memory
+        print(colored("args.model {}".format(args.model), "green"))
+        if args.checkpoint.init_ckpt_path:
+            print(
+                colored(
+                    "args.checkpoint.init_ckpt_path {}".format(
+                        args.checkpoint.init_ckpt_path
+                    ),
+                    "green",
+                )
+            )
+            with open(
+                os.path.join(args.checkpoint.init_ckpt_path, "params.json"), "r"
+            ) as f:
+                args.model = json.loads(f.read())
+                args.model = LMTransformerArgshfllama(**args.model["model"])
+            print(colored("args.model {}".format(args.model), "green"))
         with torch.device("meta"):
             model = LMTransformer(args.model)
-        logger.info("Model is built !") 
-        
-        '''
-        # loading from the model weights from the initalckpt 
-        if args.checkpoint.init_ckpt_path: 
-            st_dict = get_model_state_dict(args.checkpoint.init_ckpt_path) 
-            dcp.load(st_dict, checkpoint_id = args.checkpoint.init_ckpt_path) 
-            set_model_state_dict(model, st_dict) 
-            model.rope_embeddings.reset_parameters() 
-        ''' 
-        model_param_count = get_num_params(model) 
-        print(colored("model_param_count {}".format(model_param_count), "green")) 
+        logger.info("Model is built !")
+
+        """
+        # loading from the model weights from the initalckpt
+        if args.checkpoint.init_ckpt_path:
+            st_dict = get_model_state_dict(args.checkpoint.init_ckpt_path)
+            dcp.load(st_dict, checkpoint_id = args.checkpoint.init_ckpt_path)
+            set_model_state_dict(model, st_dict)
+            model.rope_embeddings.reset_parameters()
+        """
+        model_param_count = get_num_params(model)
+        print(colored("model_param_count {}".format(model_param_count), "green"))
 
         model = parallelize_model(
             model,
@@ -287,29 +310,30 @@ def train(args: TrainArgs):
             fsdp_grouping_plan=build_fsdp_grouping_plan(args.model),
             tp_parallelize=tp_parallelize,
             no_recompute_ops=get_no_recompute_ops(),
-        ) 
-        
+        )
 
         # Once we shard the model on different gpus we can actually initialize the model
         # First we create empty tensors of the correct shapes
-        model = model.to_empty(device="cuda") 
+        model = model.to_empty(device="cuda")
         # Then we init the model. Please make sure this function initializes *ALL* parameters
         # and buffers, otherwise you will have random values in the unitialized tensors
         # which will silently fail (give nan gradients for example)
 
         if args.checkpoint.init_ckpt_path:
             logger.info(f"Loading initial model from {args.checkpoint.init_ckpt_path}")
-            load_from_checkpoint(args.checkpoint.init_ckpt_path, model, model_key="") # Put model_key="" if its directly the model checkpoint 
-            model.rope_embeddings.reset_parameters() # For RoPe initialization since it's a buffer it might not be loaded
+            load_from_checkpoint(
+                args.checkpoint.init_ckpt_path, model, model_key=""
+            )  # Put model_key="" if its directly the model checkpoint
+            model.rope_embeddings.reset_parameters()  # For RoPe initialization since it's a buffer it might not be loaded
         else:
             with torch.random.fork_rng(devices=[torch.cuda.current_device()]):
                 torch.manual_seed(args.model.seed)
                 model.init_weights()
-        check_model_value_range(model, range=10.0, std=1.0) 
+        check_model_value_range(model, range=10.0, std=1.0)
 
         # log model size
 
-        logger.info(f"Model size: {model_param_count:,} total parameters") 
+        logger.info(f"Model size: {model_param_count:,} total parameters")
 
         gpu_memory_monitor = GPUMemoryMonitor("cuda")
         logger.info(
@@ -347,7 +371,7 @@ def train(args: TrainArgs):
                 ),
             )
 
-        gc.disable() 
+        gc.disable()
         # train loop
         model.train()
         metric_logger = context_stack.enter_context(
@@ -366,8 +390,8 @@ def train(args: TrainArgs):
         nwords_since_last_log = 0
         time_last_log = timer()
         gc.collect()
-        
-        while train_state.step < args.steps: 
+
+        while train_state.step < args.steps:
             # We constrain train_state.acc_step to be in range 0 to args.grad_acc_steps - 1
             train_state.acc_step += 1
             train_state.acc_step = train_state.acc_step % args.grad_acc_steps
@@ -385,7 +409,7 @@ def train(args: TrainArgs):
                 logger.info("garbage collection")
                 # we do garbage collection manually otherwise different processes
                 # run the GC at different times so they slow down the whole pipeline
-                gc.collect() 
+                gc.collect()
 
             input_ids = batch[:, :, 0].cuda()
             labels = batch[:, :, 1].cuda()
@@ -433,9 +457,9 @@ def train(args: TrainArgs):
 
                 assert (
                     next(model.parameters()).grad is None
-                ), "Probe model shouldn't have grads at this point" 
+                ), "Probe model shouldn't have grads at this point"
 
-            loss = model(input_ids, labels) 
+            loss = model(input_ids, labels)
 
             if args.grad_acc_steps > 1:
                 model.set_requires_gradient_sync(train_state.acc_step == 0)
@@ -450,14 +474,16 @@ def train(args: TrainArgs):
 
             # optimizer step
             grad_norm = -1.0
-            if train_state.acc_step == 0: 
-                # print(colored("get_rank {}".format(torch.distributed.get_rank()), "red")) 
+            if train_state.acc_step == 0:
+                # print(colored("get_rank {}".format(torch.distributed.get_rank()), "red"))
                 grad_norm = torch.nn.utils.clip_grad_norm_(
                     model.parameters(), max_norm=args.optim.clip, foreach=True
                 )
 
                 grad_norm = (
-                    grad_norm.full_tensor() if isinstance(grad_norm, DTensor) else grad_norm
+                    grad_norm.full_tensor()
+                    if isinstance(grad_norm, DTensor)
+                    else grad_norm
                 ).item()
 
                 optimizer.step()
@@ -564,14 +590,11 @@ def train(args: TrainArgs):
                     device_mesh=world_mesh,
                 )
 
-            if args.eval is not None and (every_n_steps(
-                train_state, args.checkpoint.eval.every, acc_step=0
-            ) or every_n_steps(train_state, args.steps, acc_step=0)):
-                from apps.main.eval import (
-                    launch_eval,
-                    EVAL_FOLDER_NAME,
-                    EvalArgs,
-                )
+            if args.eval is not None and (
+                every_n_steps(train_state, args.checkpoint.eval.every, acc_step=0)
+                or every_n_steps(train_state, args.steps, acc_step=0)
+            ):
+                from apps.main.eval import EVAL_FOLDER_NAME, EvalArgs, launch_eval
 
                 eval_args = dataclass_from_dict(EvalArgs, args.eval)
 
@@ -588,8 +611,8 @@ def train(args: TrainArgs):
                 if args.async_eval_gpus is None:
                     launch_eval(eval_args)
                 elif get_is_master():
-                    if wandb.run is not None and args.logging.wandb is not None:
-                        eval_args.wandb = deepcopy(args.logging.wandb)
+                    # if wandb.run is not None and args.logging.wandb is not None:
+                    # eval_args.wandb = deepcopy(args.logging.wandb)
                     assert args.async_eval_gpus > 0
                     logger.info(f"Launching evals on {args.async_eval_gpus} gpus")
                     with clean_env():
@@ -623,7 +646,7 @@ def train(args: TrainArgs):
             args,
             device_mesh=world_mesh,
         )
-    gc.collect() 
+    gc.collect()
 
 
 def main():

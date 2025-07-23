@@ -1,22 +1,23 @@
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 # This software may be used and distributed according to the terms of the Llama 2 Community License Agreement.
 
+import json
 import logging
 from collections import namedtuple
-from dataclasses import dataclass, asdict
-from typing import Dict, Any, List, Optional, Union
-from pathlib import Path
-import json
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 import torch
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 
 from lingua.distributed import get_is_master
-from termcolor import colored 
+from termcolor import colored
+from torch.utils.tensorboard import SummaryWriter
 
 logger = logging.getLogger()
+from datetime import datetime
 
 
 @dataclass
@@ -48,15 +49,19 @@ class MetricLogger:
             and self.args.logging.tensorboard is not None
             and get_is_master()
         ):
+            logger.info("Initializing Tensorboard writer...")
             tb_args = self.args.logging.tensorboard
-            log_dir = tb_args.log_dir if tb_args.log_dir else str(self.outdir.parent / 'runs')
+            log_dir = (
+                tb_args.log_dir if tb_args.log_dir else str(self.outdir.parent / "runs")
+            )
             if tb_args.comment:
-                log_dir = f"{log_dir}/{tb_args.comment}"
+                log_dir = f"{log_dir}/{tb_args.comment}_{datetime.now().strftime('%Y%m%d-%H%M%S')}"
+                logger.info(f"Tensorboard log dir: {log_dir}")
             self.writer = SummaryWriter(log_dir=log_dir)
             # Log config as text
             if self.args:
                 config_dict = asdict(self.args)
-                self.writer.add_text('config', json.dumps(config_dict, indent=2))
+                self.writer.add_text("config", json.dumps(config_dict, indent=2))
 
     def log(self, metrics: Dict[str, Any]):
         if self.writer:
@@ -174,12 +179,11 @@ class GPUMemoryMonitor:
         return f"{display_str}"
 
 
-def upload_train_to_tensorboard(
-    ckpt_dir, log_dir=None, train=True, eval=True
-):
-    from omegaconf import OmegaConf
+def upload_train_to_tensorboard(ckpt_dir, log_dir=None, train=True, eval=True):
     import json
     from pathlib import Path
+
+    from omegaconf import OmegaConf
     from torch.utils.tensorboard import SummaryWriter
 
     cfg_path = Path(ckpt_dir) / "config.yaml"
@@ -189,12 +193,12 @@ def upload_train_to_tensorboard(
         cfg = OmegaConf.to_container(cfg_omega)
 
     if log_dir is None:
-        log_dir = str(Path(ckpt_dir) / 'tensorboard')
+        log_dir = str(Path(ckpt_dir) / "tensorboard")
 
     writer = SummaryWriter(log_dir=log_dir)
 
     # Log config as text
-    writer.add_text('config', json.dumps(cfg, indent=2))
+    writer.add_text("config", json.dumps(cfg, indent=2))
 
     if train:
         metrics_path = Path(ckpt_dir) / "metrics.jsonl"
@@ -204,7 +208,9 @@ def upload_train_to_tensorboard(
                     m = json.loads(l)
                     step = m.get("global_step", 0)
                     for k, v in m.items():
-                        if k not in ["global_step", "created_at"] and isinstance(v, (int, float)):
+                        if k not in ["global_step", "created_at"] and isinstance(
+                            v, (int, float)
+                        ):
                             writer.add_scalar(k, v, step)
 
     if eval:
@@ -228,4 +234,4 @@ def get_num_params(model: nn.Module) -> int:
     Args : only_trainable: whether to only count trainable params
     """
     numel = {n: p.numel() for n, p in model.named_parameters()}
-    return sum(numel.values()) 
+    return sum(numel.values())

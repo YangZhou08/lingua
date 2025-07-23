@@ -2,19 +2,19 @@
 
 # dump_dir: !!CHANGETHIS!!
 
-# dump_dir: /data/users/yangzho6/lingua/checkpoints/webonly # debugging 
-dump_dir: /mnt/demo_torchx_bucket/out/${app_id} 
+# dump_dir: /data/users/yangzho6/lingua/checkpoints/webonly
+dump_dir: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/webonly2
 
 name: "webonly"
-steps: 1000 
-probe_freq: 10000 
-grad_acc_steps: 8 
+steps: 2000
+probe_freq: 10000
+grad_acc_steps: 8
 seed: 777
 optim:
-    lr: 3e-5 
-    warmup: 1000 
-    lr_min_ratio: 0.1 
-    clip: 1.0 
+    lr: 5e-6
+    warmup: 1000
+    lr_min_ratio: 0.1
+    clip: 1.0
 
 distributed:
     fsdp_type: full_shard
@@ -25,35 +25,34 @@ distributed:
     tp_size: 1
 
 model:
-    dim: 8192 
+    dim: 8192
     n_layers: 8
     n_heads: 8
 
 data:
-    root_dir: data/shuffled
+    root_dir: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/
     sources:
-        megamath_pro_web: 100.0 
-    batch_size: 1 
-    prefetch_size: 64
-    seq_len: 8192 
+        megamath_pro_web: 100.0
+    batch_size: 1
+    prefetch_size: 1024
+    seq_len: 8192
     n_views: 2
     load_async: true
     tokenizer:
-        name: tiktoken 
-        path: /data/users/yangzho6/lingua/checkpoints/Llama3.23B/tokenizer.model 
+        name: llama3
+        path: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/Llama3.23B/tokenizer.model
 
 profiling:
     run: true
 
 checkpoint:
-    init_ckpt_path: /data/users/yangzho6/lingua/checkpoints/llama-3.2-3b-dcp 
+    init_ckpt_path: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/llama-3.2-3bdcp
     dump:
-        every: 1000 
-        keep: 5 
+        every: 500
+        keep: 5
 
 logging:
-    freq: 10 
-    # wandb: 
-    #     project: "midtrainingsyncthmath" 
-    #     entity: "Stevenzhou0816100" 
-    #     name: "webonly" 
+    freq: 10
+    tensorboard:
+        log_dir: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/webonly2
+        comment: "webonly"
