@@ -54,5 +54,5 @@ checkpoint:
 logging:
     freq: 10
     tensorboard:
-        log_dir: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/webonly2
+        log_dir: /mnt/xr_core_ai_asl_llm/tree/pretrain_yangzho6/checkpoints/
         comment: "webonly"
