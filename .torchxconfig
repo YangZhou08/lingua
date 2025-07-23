@@ -1,0 +1,16 @@
+# defaults scheduler args
+[mast_conda]
+hpcIdentity = monetization_genai_platform
+hpcJobOncall = monetization_genai_platform
+workspace_fbpkg_name = metaconda_demo
+forceSingleRegion = False
+rmAttribution = ads_global_tc_ai_creatives
+modelTypeName = rl_xr_research_llm_reasoning
+; tags = ads_ranking_taxonomy_ads_ai_am, bypass_cpu_job_tc_validator
+hpcClusterUuid = MastProdCluster
+useDataConstraintsForJobPlacement = False
+use_caf = False
+# conda_fbpkg_id = torchx_base_conda_env:stable
+# sets the default scheduler to mast_conda
+[cli:run]
+scheduler = mast_conda
