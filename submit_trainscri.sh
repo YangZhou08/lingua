@@ -2,7 +2,7 @@
 
 # Slurm batch script for job submission
 #SBATCH --job-name=my_job          # Name of the job 
-#SBATCH --nodes=1 
+#SBATCH --nodes=2 
 #SBATCH --gres=gpu:8              # Request 8 GPUs
 #SBATCH --cpus-per-task=12        # Request 12 CPUs per task
 #SBATCH --partition=learn  # Specify the storygen_high queue/partition 
