@@ -44,7 +44,7 @@ srun --ntasks-per-node=1 bash -lc '
   export NODE_RANK=$SLURM_NODEID
   torchrun \
     --nnodes='"$SLURM_JOB_NUM_NODES"' \
-    --nproc-per_node=8 \
+    --nproc-per-node=8 \
     --node_rank=$NODE_RANK \
     --master_addr='"$MASTER_ADDR"' \
     --master_port='"$MASTER_PORT"' \
