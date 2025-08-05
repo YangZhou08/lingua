@@ -60,13 +60,13 @@ from lingua.probe import AutoProbeD
 from lingua.profiling import maybe_run_profiler, ProfilerArgs
 from lingua.stool import launch_job, StoolArgs
 
-# from lingua.metrics import get_num_params, GPUMemoryMonitor, LoggingArgs, MetricLogger
-from lingua.summarywritermetrics import (
-    get_num_params,
-    GPUMemoryMonitor,
-    LoggingArgs,
-    MetricLogger,
-)
+from lingua.metrics import get_num_params, GPUMemoryMonitor, LoggingArgs, MetricLogger 
+# from lingua.summarywritermetrics import (
+#     get_num_params,
+#     GPUMemoryMonitor,
+#     LoggingArgs,
+#     MetricLogger,
+# )
 from lingua.tokenizer import build_tokenizer
 from omegaconf import OmegaConf
 from termcolor import colored

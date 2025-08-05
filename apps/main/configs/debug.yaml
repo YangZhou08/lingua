@@ -35,12 +35,14 @@ data:
     sources:
         megamath_pro_web: 100.0 
     batch_size: 1 
-    prefetch_size: 64
+    prefetch_size: 4096 
     seq_len: 8192 
     n_views: 2
     load_async: true
+    add_bos: true
+    add_eos: true
     tokenizer:
-        name: tiktoken 
+        name: llama3 
         path: /fsx-storygen/jwzhao/yangzho6/lingua/setup/tokenizerllama/original/tokenizer.model 
 
 profiling:
@@ -49,20 +51,12 @@ profiling:
 checkpoint:
     init_ckpt_path: /fsx-storygen/jwzhao/yangzho6/lingua/checkpoints/debug/checkpoints/Llama-3.2-3Bdcp 
     dump:
-        every: 100 
-        keep: 1
-    eval:
-        every: 100 
-        keep: 1
+        every: 500 
+        keep: 5 
 
 logging:
     freq: 10 
     wandb: 
         project: "midtrainingsyncthmath" 
         entity: "Stevenzhou0816100" 
-        name: "debug" 
-
-eval:
-    harness:
-        tasks:
-            - hellaswag 
+        name: "webonly" 
