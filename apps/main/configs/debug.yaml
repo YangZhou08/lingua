@@ -16,6 +16,8 @@ optim:
     clip: 1.0 
 
 distributed:
+    dp_replicate: 2 
+    dp_shard: 8 
     fsdp_type: full_shard
     compile: true
     model_dtype: bf16

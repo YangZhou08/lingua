@@ -54,6 +54,7 @@ def preprocess_data(datasetpath, outputpath, name):
     dataset.to_json(outputpath) 
 
 if __name__ == "__main__": 
+    download_dataset()
     datasetpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/a-m_team_primitive" 
     outputpath = "/fsx-storygen/jwzhao/yangzho6/lingua/setup/data/a-m_team/a-m_team_primitive.jsonl" 
     preprocess_data(datasetpath, outputpath) 

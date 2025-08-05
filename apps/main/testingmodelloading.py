@@ -377,7 +377,6 @@ def train(args: TrainArgs):
         print(colored("eval_args {}".format(eval_args), "green")) 
         print() 
         launch_eval(eval_args) 
-        exit(0) 
 
         # train loop
         model.train() 
